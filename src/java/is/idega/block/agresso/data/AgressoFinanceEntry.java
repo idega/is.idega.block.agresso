@@ -2,6 +2,7 @@ package is.idega.block.agresso.data;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +22,7 @@ public class AgressoFinanceEntry implements Serializable {
 	public static final String ENTITY_NAME = "agresso_entry";
 	public static final String COLUMN_ID = ENTITY_NAME + "id";
 	public static final String COLUMN_CREATION_DATE = "creation_date";
-	public static final String COLUMN_CREATED_BY = "created_by";
+	//public static final String COLUMN_CREATED_BY = "created_by";
 	public static final String COLUMN_ENTRY_TYPE = "entry_type";
 	public static final String COLUMN_ENTRY_USER = "entry_user";
 	public static final String COLUMN_ENTRY_PAYMENT_USER = "payment_user";
@@ -39,10 +40,10 @@ public class AgressoFinanceEntry implements Serializable {
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_CREATION_DATE)
 	@Temporal(TemporalType.TIMESTAMP)
-	private Timestamp creationDate;
+	private Date creationDate;
 	
-	@Column(name=AgressoFinanceEntry.COLUMN_CREATED_BY)
-	private User createdBy;
+	//@Column(name=AgressoFinanceEntry.COLUMN_CREATED_BY)
+	//private User createdBy;
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_ENTRY_TYPE) 
 	private String entryType;
@@ -55,7 +56,7 @@ public class AgressoFinanceEntry implements Serializable {
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_PAYMENT_DATE)
 	@Temporal(TemporalType.TIMESTAMP)
-	private Timestamp paymentDate;
+	private Date paymentDate;
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_AMOUNT)
 	private Integer amount;
@@ -65,7 +66,7 @@ public class AgressoFinanceEntry implements Serializable {
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_READ_DATE)
 	@Temporal(TemporalType.TIMESTAMP)
-	private Timestamp readDate;
+	private Date readDate;
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_DISPUTED)
 	private boolean disputed;
@@ -81,21 +82,21 @@ public class AgressoFinanceEntry implements Serializable {
 		this.id = id;
 	}
 	
-	public Timestamp getCreationDate() {
+	public Date getCreationDate() {
 		return this.creationDate;
 	}
 	
-	public void setCreationDate(Timestamp creationDate) {
+	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
 
-	public User getCreatedBy() {
-		return createdBy;
-	}
+	//public User getCreatedBy() {
+	//	return createdBy;
+	//}
 
-	public void setCreatedBy(User createdBy) {
-		this.createdBy = createdBy;
-	}
+	//public void setCreatedBy(User createdBy) {
+	//	this.createdBy = createdBy;
+	//}
 
 	public String getEntryType() {
 		return entryType;
@@ -121,11 +122,11 @@ public class AgressoFinanceEntry implements Serializable {
 		this.entryPaymentUser = entryPaymentUser;
 	}
 
-	public Timestamp getPaymentDate() {
+	public Date getPaymentDate() {
 		return paymentDate;
 	}
 
-	public void setPaymentDate(Timestamp paymentDate) {
+	public void setPaymentDate(Date paymentDate) {
 		this.paymentDate = paymentDate;
 	}
 
@@ -145,11 +146,11 @@ public class AgressoFinanceEntry implements Serializable {
 		this.read = read;
 	}
 
-	public Timestamp getReadDate() {
+	public Date getReadDate() {
 		return readDate;
 	}
 
-	public void setReadDate(Timestamp readDate) {
+	public void setReadDate(Date readDate) {
 		this.readDate = readDate;
 	}
 
