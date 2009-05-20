@@ -1,7 +1,6 @@
 package is.idega.block.agresso.data;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -12,8 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import com.idega.user.data.User;
 
 @Entity
 @Table(name=AgressoFinanceEntry.ENTITY_NAME)
