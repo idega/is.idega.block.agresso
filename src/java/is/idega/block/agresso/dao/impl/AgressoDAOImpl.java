@@ -23,13 +23,43 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 		AgressoFinanceEntry entry = new AgressoFinanceEntry();
 		entry.setAmount(amount);
 		entry.setCreationDate(IWTimestamp.getTimestampRightNow());
-		entry.setDisputed(false);
-		entry.setRead(false);
+		entry.setRead("");
+		entry.setEntryUser(userSSN);
+		entry.setEntryType(entryType);
+		entry.setPaymentDate(paymentDate);
+		entry.setInfo(info);
+
+		getEntityManager().persist(entry);
+	}
+
+	@Transactional(readOnly = false)
+	public void addFinanceEntryParking(String entryType, String userSSN,
+			Integer amount, Date paymentDate, String info,
+			String registrationNumber, String permanentNumber, String carType,
+			String owner, String ticketNumber, String ticketOfficer,
+			String streetName, String streetNumber, String streetDescription,
+			String meterNumber, String invoiceNumber) {
+		AgressoFinanceEntry entry = new AgressoFinanceEntry();
+		entry.setAmount(amount);
+		entry.setCreationDate(IWTimestamp.getTimestampRightNow());
+		entry.setRead("");
 		entry.setEntryUser(userSSN);
 		entry.setEntryType(entryType);
 		entry.setPaymentDate(paymentDate);
 		entry.setInfo(info);
 		
+		entry.setRegistrationNumber(registrationNumber);
+		entry.setPermanentNumber(permanentNumber);
+		entry.setCarType(carType);
+		entry.setOwner(owner);
+		entry.setTicketNumber(ticketNumber);
+		entry.setTicketOfficer(ticketOfficer);
+		entry.setStreetName(streetName);
+		entry.setStreetNumber(streetNumber);
+		entry.setStreetDescription(streetDescription);
+		entry.setMeterNumber(meterNumber);
+		entry.setInvoiceNumber(invoiceNumber);
+
 		getEntityManager().persist(entry);
 	}
 

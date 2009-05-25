@@ -12,16 +12,21 @@ import com.idega.util.expression.ELUtil;
 @Scope("singleton")
 @Service("agressoFinanceBusiness")
 public class AgressoFinanceBusiness {
-	
+
 	@Autowired
 	private AgressoDAO agressoDAO;
-	
-	public void createParkingEntry(String user, Integer amount, String info) {
+
+	public void createParkingEntry(String user, Integer amount, String info,
+			String registrationNumber, String permanentNumber, String carType,
+			String owner, String ticketNumber, String ticketOfficer,
+			String streetName, String streetNumber, String streetDescription,
+			String meterNumber, String invoiceNumber) {
 		IWTimestamp paymentDate = new IWTimestamp();
 		paymentDate.addDays(14);
-		getAgressoDAO().addFinanceEntry("PARKING", user, amount, paymentDate.getTimestamp(), info);
+		getAgressoDAO().addFinanceEntry("PARKING", user, amount,
+				paymentDate.getTimestamp(), info);
 	}
-	
+
 	protected AgressoDAO getAgressoDAO() {
 		if (agressoDAO == null) {
 			ELUtil.getInstance().autowire(this);
