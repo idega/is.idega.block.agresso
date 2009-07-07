@@ -24,7 +24,7 @@ public class AgressoFinanceEntry implements Serializable {
 	public static final String COLUMN_ENTRY_PAYMENT_USER = "payment_user";
 	public static final String COLUMN_PAYMENT_DATE = "payment_date";
 	public static final String COLUMN_AMOUNT = "amount";
-	public static final String COLUMN_READ = "read";
+	public static final String COLUMN_READ = "is_read";
 	public static final String COLUMN_READ_DATE = "read_date";
 	public static final String COLUMN_INFO = "info";
 	public static final String COLUMN_AGRESSO_ID = "agresso_id";
