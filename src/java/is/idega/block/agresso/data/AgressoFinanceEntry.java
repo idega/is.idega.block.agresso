@@ -8,12 +8,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
 @Table(name=AgressoFinanceEntry.ENTITY_NAME)
+@NamedQuery(name=AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON, query="select e from AgressoFinanceEntry e where e.ticketNumber=:ticketNumber and rulingResult is null")
 public class AgressoFinanceEntry implements Serializable {
 	private static final long serialVersionUID = -747605984016128307L;
 	public static final String ENTITY_NAME = "agresso_entry";
@@ -42,6 +44,19 @@ public class AgressoFinanceEntry implements Serializable {
 	public static final String COLUMN_METER_NUMBER = "meter_number";
 	public static final String COLUMN_INVOICE_NUMBER = "invoice_number";
 	
+	public static final String COLUMN_PROTESTED = "is_protested";
+	public static final String COLUMN_PROTESTED_DATE = "protested_date";
+	
+	public static final String COLUMN_RULING = "ruling_result";
+	public static final String COLUMN_RULING_RESULT_DATE = "ruling_result_date";
+
+	public static final String RULING_APPROVED = "approved";
+	public static final String RULING_DENIED = "denied";
+	
+	
+	public static final String NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON = "agressoFinanceEntry.findByTicketNumber";
+
+	
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name=AgressoFinanceEntry.COLUMN_ID)
 	private Long id;
@@ -66,12 +81,12 @@ public class AgressoFinanceEntry implements Serializable {
 	@Column(name=AgressoFinanceEntry.COLUMN_AMOUNT)
 	private Integer amount;
 	
-	@Column(name=AgressoFinanceEntry.COLUMN_READ,length=2)
-	private String read;
+	@Column(name=AgressoFinanceEntry.COLUMN_READ,length=1)
+	private String isRead;
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_READ_DATE)
 	@Temporal(TemporalType.DATE)
-	private Date readDate;
+	private Date isReadDate;
 
 	@Column(name=AgressoFinanceEntry.COLUMN_INFO,length=1000)
 	private String info;
@@ -111,6 +126,20 @@ public class AgressoFinanceEntry implements Serializable {
 
 	@Column(name=AgressoFinanceEntry.COLUMN_INVOICE_NUMBER)
 	private String invoiceNumber;
+	
+	@Column(name=AgressoFinanceEntry.COLUMN_PROTESTED_DATE)
+	@Temporal(TemporalType.DATE)
+	private Date protestedDate;
+	
+	@Column(name=AgressoFinanceEntry.COLUMN_PROTESTED,length=1)
+	private String isProtested;
+	
+	@Column(name=AgressoFinanceEntry.COLUMN_RULING_RESULT_DATE)
+	@Temporal(TemporalType.DATE)
+	private Date rulingResultDate;
+	
+	@Column(name=AgressoFinanceEntry.COLUMN_RULING,length=30)
+	private String rulingResult;
 
 	
 	public Long getID() {
@@ -169,20 +198,20 @@ public class AgressoFinanceEntry implements Serializable {
 		this.amount = amount;
 	}
 
-	public String isRead() {
-		return read;
+	public String getIsRead() {
+		return isRead;
 	}
 
-	public void setRead(String read) {
-		this.read = read;
+	public void setIsRead(String isRead) {
+		this.isRead = isRead;
 	}
 
-	public Date getReadDate() {
-		return readDate;
+	public Date getIsReadDate() {
+		return isReadDate;
 	}
 
-	public void setReadDate(Date readDate) {
-		this.readDate = readDate;
+	public void setIsReadDate(Date isReadDate) {
+		this.isReadDate = isReadDate;
 	}
 
 	public String getInfo() {
@@ -287,5 +316,45 @@ public class AgressoFinanceEntry implements Serializable {
 
 	public void setInvoiceNumber(String invoiceNumber) {
 		this.invoiceNumber = invoiceNumber;
+	}
+
+	
+	public Date getProtestedDate() {
+		return protestedDate;
+	}
+
+	
+	public void setProtestedDate(Date protestedDate) {
+		this.protestedDate = protestedDate;
+	}
+
+	
+	public String getIsProtested() {
+		return isProtested;
+	}
+
+	
+	public void setIsProtested(String isProtested) {
+		this.isProtested = isProtested;
+	}
+
+	
+	public Date getRulingResultDate() {
+		return rulingResultDate;
+	}
+
+	
+	public void setRulingResultDate(Date rulingResultDate) {
+		this.rulingResultDate = rulingResultDate;
+	}
+
+	
+	public String getRulingResult() {
+		return rulingResult;
+	}
+
+	
+	public void setRulingResult(String rulingResult) {
+		this.rulingResult = rulingResult;
 	}
 }

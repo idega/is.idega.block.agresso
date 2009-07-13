@@ -23,7 +23,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 		AgressoFinanceEntry entry = new AgressoFinanceEntry();
 		entry.setAmount(amount);
 		entry.setCreationDate(IWTimestamp.getTimestampRightNow());
-		entry.setRead("");
+		
 		entry.setEntryUser(userSSN);
 		entry.setEntryType(entryType);
 		entry.setPaymentDate(paymentDate);
@@ -42,7 +42,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 		AgressoFinanceEntry entry = new AgressoFinanceEntry();
 		entry.setAmount(amount);
 		entry.setCreationDate(IWTimestamp.getTimestampRightNow());
-		entry.setRead("");
+	
 		entry.setEntryUser(userSSN);
 		entry.setEntryType(entryType);
 		entry.setPaymentDate(paymentDate);
