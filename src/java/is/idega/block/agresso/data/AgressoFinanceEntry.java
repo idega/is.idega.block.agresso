@@ -49,6 +49,8 @@ public class AgressoFinanceEntry implements Serializable {
 	
 	public static final String COLUMN_RULING = "ruling_result";
 	public static final String COLUMN_RULING_RESULT_DATE = "ruling_result_date";
+	
+	public static final String COLUMN_IS_PROCESSED = "is_processed";
 
 	public static final String RULING_APPROVED = "approved";
 	public static final String RULING_DENIED = "denied";
@@ -140,6 +142,9 @@ public class AgressoFinanceEntry implements Serializable {
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_RULING,length=30)
 	private String rulingResult;
+	
+	@Column(name=AgressoFinanceEntry.COLUMN_IS_PROCESSED,length=1)
+	private String isProcessed;
 
 	
 	public Long getID() {
@@ -204,6 +209,14 @@ public class AgressoFinanceEntry implements Serializable {
 
 	public void setIsRead(String isRead) {
 		this.isRead = isRead;
+	}
+	
+	public String getIsProcessed() {
+		return isProcessed;
+	}
+
+	public void setIsProcessed(String isProcessed) {
+		this.isProcessed = isProcessed;
 	}
 
 	public Date getIsReadDate() {
