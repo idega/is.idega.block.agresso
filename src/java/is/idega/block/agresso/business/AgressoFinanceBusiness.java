@@ -25,7 +25,7 @@ public class AgressoFinanceBusiness {
 			String streetName, String streetNumber, String streetDescription,
 			String meterNumber, String invoiceNumber) {
 		IWTimestamp paymentDate = new IWTimestamp();
-		paymentDate.addDays(13);
+		paymentDate.addDays(14);
 		getAgressoDAO().addFinanceEntryParking("PARKING", user, amount,
 				paymentDate.getTimestamp(), info, registrationNumber, permanentNumber, carType, owner, ticketNumber, ticketOfficer, streetName,
 				streetNumber, streetDescription, meterNumber, invoiceNumber);
