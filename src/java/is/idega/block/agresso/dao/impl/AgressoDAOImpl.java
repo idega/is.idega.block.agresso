@@ -3,6 +3,7 @@ package is.idega.block.agresso.dao.impl;
 import is.idega.block.agresso.dao.AgressoDAO;
 import is.idega.block.agresso.data.AgressoFinanceEntry;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import org.springframework.context.annotation.Scope;
@@ -19,7 +20,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 
 	@Transactional(readOnly = false)
 	public void addFinanceEntry(String entryType, String userSSN,
-			Integer amount, Date paymentDate, String info) {
+			Integer amount, Timestamp paymentDate, String info) {
 		AgressoFinanceEntry entry = new AgressoFinanceEntry();
 		entry.setAmount(amount);
 		entry.setCreationDate(IWTimestamp.getTimestampRightNow());
@@ -34,7 +35,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 
 	@Transactional(readOnly = false)
 	public void addFinanceEntryParking(String entryType, String userSSN,
-			Integer amount, Date paymentDate, String info,
+			Integer amount, Timestamp paymentDate, String info,
 			String registrationNumber, String permanentNumber, String carType,
 			String owner, String ticketNumber, String ticketOfficer,
 			String streetName, String streetNumber, String streetDescription,

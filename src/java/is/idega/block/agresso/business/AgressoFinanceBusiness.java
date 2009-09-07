@@ -3,6 +3,8 @@ package is.idega.block.agresso.business;
 import is.idega.block.agresso.dao.AgressoDAO;
 import is.idega.block.agresso.data.AgressoFinanceEntry;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,13 +53,13 @@ public class AgressoFinanceBusiness {
 		Query query = getAgressoDAO().createNamedQuery(AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON);
 		query.setParameter("ticketNumber", ticketNumber);
 		AgressoFinanceEntry entry = (AgressoFinanceEntry) query.getSingleResult();
-		IWTimestamp today = new IWTimestamp();
+		Timestamp now = IWTimestamp.getTimestampRightNow();
 		
 		if(isProtested){
 			String alreadyProtested = entry.getIsProtested();
 			if(!"1".equals(alreadyProtested)){
 				entry.setIsProtested("1");
-				entry.setProtestedDate(today.getDate());
+				entry.setProtestedDate(now);
 			}
 		}
 		else{
@@ -67,7 +69,7 @@ public class AgressoFinanceBusiness {
 		
 		if(rulingResult!=null){
 			entry.setRulingResult(rulingResult);
-			entry.setRulingResultDate(today.getDate());
+			entry.setRulingResultDate(now);
 		}
 		else{
 			entry.setRulingResult(null);
