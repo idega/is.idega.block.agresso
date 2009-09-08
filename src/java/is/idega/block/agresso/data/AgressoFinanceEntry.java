@@ -1,7 +1,7 @@
 package is.idega.block.agresso.data;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -65,7 +65,7 @@ public class AgressoFinanceEntry implements Serializable {
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_CREATION_DATE)
 	@Temporal(TemporalType.TIMESTAMP)
-	private Timestamp creationDate;
+	private Date creationDate;
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_ENTRY_TYPE) 
 	private String entryType;
@@ -78,7 +78,7 @@ public class AgressoFinanceEntry implements Serializable {
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_PAYMENT_DATE)
 	@Temporal(TemporalType.TIMESTAMP)
-	private Timestamp paymentDate;
+	private Date paymentDate;
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_AMOUNT)
 	private Integer amount;
@@ -88,7 +88,7 @@ public class AgressoFinanceEntry implements Serializable {
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_READ_DATE)
 	@Temporal(TemporalType.TIMESTAMP)
-	private Timestamp isReadDate;
+	private Date isReadDate;
 
 	@Column(name=AgressoFinanceEntry.COLUMN_INFO,length=1000)
 	private String info;
@@ -131,14 +131,14 @@ public class AgressoFinanceEntry implements Serializable {
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_PROTESTED_DATE)
 	@Temporal(TemporalType.TIMESTAMP)
-	private Timestamp protestedDate;
+	private Date protestedDate;
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_PROTESTED,length=1)
 	private String isProtested;
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_RULING_RESULT_DATE)
 	@Temporal(TemporalType.TIMESTAMP)
-	private Timestamp rulingResultDate;
+	private Date rulingResultDate;
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_RULING,length=30)
 	private String rulingResult;
@@ -155,11 +155,11 @@ public class AgressoFinanceEntry implements Serializable {
 		this.id = id;
 	}
 	
-	public Timestamp getCreationDate() {
+	public Date getCreationDate() {
 		return this.creationDate;
 	}
 	
-	public void setCreationDate(Timestamp creationDate) {
+	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
 
@@ -187,11 +187,11 @@ public class AgressoFinanceEntry implements Serializable {
 		this.entryPaymentUser = entryPaymentUser;
 	}
 
-	public Timestamp getPaymentDate() {
+	public Date getPaymentDate() {
 		return paymentDate;
 	}
 
-	public void setPaymentDate(Timestamp paymentDate) {
+	public void setPaymentDate(Date paymentDate) {
 		this.paymentDate = paymentDate;
 	}
 
@@ -219,11 +219,11 @@ public class AgressoFinanceEntry implements Serializable {
 		this.isProcessed = isProcessed;
 	}
 
-	public Timestamp getIsReadDate() {
+	public Date getIsReadDate() {
 		return isReadDate;
 	}
 
-	public void setIsReadDate(Timestamp isReadDate) {
+	public void setIsReadDate(Date isReadDate) {
 		this.isReadDate = isReadDate;
 	}
 
@@ -332,12 +332,12 @@ public class AgressoFinanceEntry implements Serializable {
 	}
 
 	
-	public Timestamp getProtestedDate() {
+	public Date getProtestedDate() {
 		return protestedDate;
 	}
 
 	
-	public void setProtestedDate(Timestamp protestedDate) {
+	public void setProtestedDate(Date protestedDate) {
 		this.protestedDate = protestedDate;
 	}
 
@@ -352,12 +352,12 @@ public class AgressoFinanceEntry implements Serializable {
 	}
 
 	
-	public Timestamp getRulingResultDate() {
+	public Date getRulingResultDate() {
 		return rulingResultDate;
 	}
 
 	
-	public void setRulingResultDate(Timestamp rulingResultDate) {
+	public void setRulingResultDate(Date rulingResultDate) {
 		this.rulingResultDate = rulingResultDate;
 	}
 
