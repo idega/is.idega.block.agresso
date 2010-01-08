@@ -4,6 +4,7 @@ import is.idega.block.agresso.dao.AgressoDAO;
 import is.idega.block.agresso.data.AgressoFinanceEntry;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.persistence.Query;
 
@@ -21,15 +22,17 @@ public class AgressoFinanceBusiness {
 	@Autowired
 	private AgressoDAO agressoDAO;
 
-	public void createParkingEntry(String user, Integer amount, String info,
+	public void createParkingEntry(Date ticketDate, String user, Integer amount, String info,
 			String registrationNumber, String permanentNumber, String carType,
 			String owner, String ticketNumber, String ticketOfficer,
 			String streetName, String streetNumber, String streetDescription,
 			String meterNumber, String invoiceNumber) {
-		IWTimestamp paymentDate = new IWTimestamp();
+		
+		IWTimestamp paymentDate = new IWTimestamp(ticketDate);
+		
 		paymentDate.addDays(14);
 		getAgressoDAO().addFinanceEntryParking("PARKING", user, amount,
-				paymentDate.getTimestamp(), info, registrationNumber, permanentNumber, carType, owner, ticketNumber, ticketOfficer, streetName,
+				paymentDate.getTimestamp(),ticketDate, info, registrationNumber, permanentNumber, carType, owner, ticketNumber, ticketOfficer, streetName,
 				streetNumber, streetDescription, meterNumber, invoiceNumber);
 	}
 

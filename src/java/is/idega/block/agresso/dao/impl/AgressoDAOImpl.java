@@ -35,15 +35,18 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 
 	@Transactional(readOnly = false)
 	public void addFinanceEntryParking(String entryType, String userSSN,
-			Integer amount, Timestamp paymentDate, String info,
+			Integer amount, Timestamp paymentDate, Date creationDate, String info,
 			String registrationNumber, String permanentNumber, String carType,
 			String owner, String ticketNumber, String ticketOfficer,
 			String streetName, String streetNumber, String streetDescription,
 			String meterNumber, String invoiceNumber) {
 		AgressoFinanceEntry entry = new AgressoFinanceEntry();
 		entry.setAmount(amount);
-		entry.setCreationDate(IWTimestamp.getTimestampRightNow());
-	
+		
+		if(creationDate==null){
+			entry.setCreationDate(IWTimestamp.getTimestampRightNow());
+		}
+		
 		entry.setEntryUser(userSSN);
 		entry.setEntryType(entryType);
 		entry.setPaymentDate(paymentDate);
