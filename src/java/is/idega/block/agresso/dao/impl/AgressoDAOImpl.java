@@ -46,6 +46,9 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 		if(creationDate==null){
 			entry.setCreationDate(IWTimestamp.getTimestampRightNow());
 		}
+		else{
+			entry.setCreationDate(creationDate);
+		}
 		
 		entry.setEntryUser(userSSN);
 		entry.setEntryType(entryType);
