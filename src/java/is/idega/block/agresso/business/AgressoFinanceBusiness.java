@@ -22,7 +22,7 @@ public class AgressoFinanceBusiness {
 	@Autowired
 	private AgressoDAO agressoDAO;
 
-	public void createParkingEntry(Date ticketDate, String user, Integer amount, String info,
+	public void createParkingEntry(String entryType, Date ticketDate, String user, Integer amount, String info,
 			String registrationNumber, String permanentNumber, String carType,
 			String owner, String ticketNumber, String ticketOfficer,
 			String streetName, String streetNumber, String streetDescription,
