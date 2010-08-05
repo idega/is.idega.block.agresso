@@ -49,35 +49,28 @@ public class AgressoFinanceBusiness {
 	 * @param isProtested, required otherwise isProtested and protestDate will be nulled in the db
 	 * @param rulingResult, if not supplied rulingResult and rulingDate will be nulled.
 	 */
-	public void updateTicketProtestInfo(String ticketNumber, boolean isProtested, String rulingResult){
-		
+	public void updateTicketProtestInfo(String ticketNumber, boolean isProtested, String status, String reason, String explanation, Timestamp rullingDate) {
 		//note although highly unlikely ;) the same car could get the same ticketnumber...so here we would get an exception
 		//we only look for entries that have not gotten a ruling yet.
 		Query query = getAgressoDAO().createNamedQuery(AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON);
 		query.setParameter("ticketNumber", ticketNumber);
 		AgressoFinanceEntry entry = (AgressoFinanceEntry) query.getSingleResult();
-		Timestamp now = IWTimestamp.getTimestampRightNow();
 		
-		if(isProtested){
+		if (isProtested) {
 			String alreadyProtested = entry.getIsProtested();
-			if(!"1".equals(alreadyProtested)){
+			if (!"1".equals(alreadyProtested)) {
 				entry.setIsProtested("1");
-				entry.setProtestedDate(now);
+				entry.setProtestedDate(IWTimestamp.RightNow().getTimestamp());
 			}
-		}
-		else{
+		} else {
 			entry.setIsProtested(null);
 			entry.setProtestedDate(null);
 		}
 		
-		if(rulingResult!=null){
-			entry.setRulingResult(rulingResult);
-			entry.setRulingResultDate(now);
-		}
-		else{
-			entry.setRulingResult(null);
-			entry.setRulingResultDate(null);
-		}
+		entry.setRulingResult(status);
+		entry.setRulingResultDate(rullingDate);
+		entry.setRullingPredefinedText(reason);
+		entry.setRullingExplanationText(explanation);
 		
 		getAgressoDAO().persist(entry);
 		

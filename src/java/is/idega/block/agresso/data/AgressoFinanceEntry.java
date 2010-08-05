@@ -49,6 +49,8 @@ public class AgressoFinanceEntry implements Serializable {
 	
 	public static final String COLUMN_RULING = "ruling_result";
 	public static final String COLUMN_RULING_RESULT_DATE = "ruling_result_date";
+	public static final String COLUMN_RULLING_PREDEFINED_TEXT = "rulling_predefined_text";
+	public static final String COLUMN_RULLING_EXPLANATION_TEXT = "rulling_explantation_text";
 	
 	public static final String COLUMN_IS_PROCESSED = "is_processed";
 
@@ -142,6 +144,12 @@ public class AgressoFinanceEntry implements Serializable {
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_RULING,length=30)
 	private String rulingResult;
+	
+	@Column(name=COLUMN_RULLING_PREDEFINED_TEXT,length=255)
+	private String rullingPredefinedText;
+	
+	@Column(name=COLUMN_RULLING_EXPLANATION_TEXT,length=255)
+	private String rullingExplanationText;
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_IS_PROCESSED,length=1)
 	private String isProcessed;
@@ -346,28 +354,39 @@ public class AgressoFinanceEntry implements Serializable {
 		return isProtested;
 	}
 
-	
 	public void setIsProtested(String isProtested) {
 		this.isProtested = isProtested;
 	}
 
-	
 	public Date getRulingResultDate() {
 		return rulingResultDate;
 	}
-
 	
 	public void setRulingResultDate(Date rulingResultDate) {
 		this.rulingResultDate = rulingResultDate;
 	}
-
 	
 	public String getRulingResult() {
 		return rulingResult;
 	}
-
 	
 	public void setRulingResult(String rulingResult) {
 		this.rulingResult = rulingResult;
+	}
+
+	public String getRullingPredefinedText() {
+		return rullingPredefinedText;
+	}
+
+	public void setRullingPredefinedText(String rullingPredefinedText) {
+		this.rullingPredefinedText = rullingPredefinedText;
+	}
+
+	public String getRullingExplanationText() {
+		return rullingExplanationText;
+	}
+
+	public void setRullingExplanationText(String rullingExplanationText) {
+		this.rullingExplanationText = rullingExplanationText;
 	}
 }
