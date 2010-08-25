@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -15,7 +16,12 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name=AgressoFinanceEntry.ENTITY_NAME)
-@NamedQuery(name=AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON, query="select e from AgressoFinanceEntry e where e.ticketNumber=:ticketNumber and rulingResult is null")
+@NamedQueries({
+	@NamedQuery(name=AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER,
+		query="select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.ticketNumber = :ticketNumber"),
+	@NamedQuery(name=AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON,
+		query="select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.ticketNumber = :ticketNumber and (e.rulingResult is null or e.rulingResult = 'protested')")
+})
 public class AgressoFinanceEntry implements Serializable {
 	private static final long serialVersionUID = -747605984016128307L;
 	public static final String ENTITY_NAME = "agresso_entry";
@@ -58,8 +64,8 @@ public class AgressoFinanceEntry implements Serializable {
 	public static final String RULING_DENIED = "denied";
 	
 	
-	public static final String NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON = "agressoFinanceEntry.findByTicketNumber";
-
+	public static final String NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON = "agressoFinanceEntry.findByTicketNumberNotRuled";
+	public static final String NAMED_QUERY_FIND_BY_TICKET_NUMBER = "agressoFinanceEntry.findByTicketNumber";
 	
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name=AgressoFinanceEntry.COLUMN_ID)
@@ -388,5 +394,10 @@ public class AgressoFinanceEntry implements Serializable {
 
 	public void setRullingExplanationText(String rullingExplanationText) {
 		this.rullingExplanationText = rullingExplanationText;
+	}
+	
+	@Override
+	public String toString() {
+		return "ID: " + getID() + ", ticket number: " + getTicketNumber();
 	}
 }

@@ -5,19 +5,23 @@ import is.idega.block.agresso.data.AgressoFinanceEntry;
 
 import java.sql.Timestamp;
 import java.util.Date;
-
-import javax.persistence.Query;
+import java.util.List;
+import java.util.logging.Level;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import com.idega.core.business.DefaultSpringBean;
+import com.idega.core.persistence.Param;
 import com.idega.util.IWTimestamp;
+import com.idega.util.ListUtil;
 import com.idega.util.expression.ELUtil;
 
-@Scope("singleton")
 @Service("agressoFinanceBusiness")
-public class AgressoFinanceBusiness {
+@Scope(BeanDefinition.SCOPE_SINGLETON)
+public class AgressoFinanceBusiness extends DefaultSpringBean {
 
 	@Autowired
 	private AgressoDAO agressoDAO;
@@ -50,12 +54,24 @@ public class AgressoFinanceBusiness {
 	 * @param rulingResult, if not supplied rulingResult and rulingDate will be nulled.
 	 */
 	public void updateTicketProtestInfo(String ticketNumber, boolean isProtested, String status, String reason, String explanation, Timestamp rullingDate) {
-		//note although highly unlikely ;) the same car could get the same ticketnumber...so here we would get an exception
-		//we only look for entries that have not gotten a ruling yet.
-		Query query = getAgressoDAO().createNamedQuery(AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON);
-		query.setParameter("ticketNumber", ticketNumber);
-		AgressoFinanceEntry entry = (AgressoFinanceEntry) query.getSingleResult();
+		List<AgressoFinanceEntry> entries = null;
+		try {
+			entries = getAgressoDAO().getResultList(AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER, AgressoFinanceEntry.class,
+					new Param("ticketNumber", ticketNumber));
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error while trying to find entry in DB table '" + AgressoFinanceEntry.ENTITY_NAME + "' by ticket number: " + ticketNumber, e);
+			return;
+		}
+		if (ListUtil.isEmpty(entries)) {
+			getLogger().warning("Unable to find entry in DB table '" + AgressoFinanceEntry.ENTITY_NAME + "' by ticket number: " + ticketNumber);
+			return;
+		}
 		
+		if (entries.size() > 1) {
+			getLogger().warning("Founf multiple entries for the same ticket number (" + ticketNumber + "): " + entries);
+		}
+		
+		AgressoFinanceEntry entry = entries.iterator().next();
 		if (isProtested) {
 			String alreadyProtested = entry.getIsProtested();
 			if (!"1".equals(alreadyProtested)) {
@@ -73,7 +89,6 @@ public class AgressoFinanceBusiness {
 		entry.setRullingExplanationText(explanation);
 		
 		getAgressoDAO().persist(entry);
-		
 	}
 
 }
