@@ -17,6 +17,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name=AgressoFinanceEntry.ENTITY_NAME)
 @NamedQueries({
+	@NamedQuery(name=AgressoFinanceEntry.NAMED_QUERY_FIND_BY_ID, query="select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.id = :id"),
 	@NamedQuery(name=AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER,
 		query="select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.ticketNumber = :ticketNumber"),
 	@NamedQuery(name=AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON,
@@ -63,9 +64,9 @@ public class AgressoFinanceEntry implements Serializable {
 	public static final String RULING_APPROVED = "approved";
 	public static final String RULING_DENIED = "denied";
 	
-	
-	public static final String NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON = "agressoFinanceEntry.findByTicketNumberNotRuled";
-	public static final String NAMED_QUERY_FIND_BY_TICKET_NUMBER = "agressoFinanceEntry.findByTicketNumber";
+	public static final String	NAMED_QUERY_FIND_BY_ID = "agressoFinanceEntry.findById",
+								NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON = "agressoFinanceEntry.findByTicketNumberNotRuled",
+								NAMED_QUERY_FIND_BY_TICKET_NUMBER = "agressoFinanceEntry.findByTicketNumber";
 	
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name=AgressoFinanceEntry.COLUMN_ID)

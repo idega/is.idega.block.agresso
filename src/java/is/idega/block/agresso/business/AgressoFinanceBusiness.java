@@ -26,18 +26,34 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 	@Autowired
 	private AgressoDAO agressoDAO;
 
-	public void createParkingEntry(String entryType, Date ticketDate, String user, Integer amount, String info,
+	public Long createParkingEntry(String entryType, Date ticketDate, String user, Integer amount, String info,
 			String registrationNumber, String permanentNumber, String carType,
 			String owner, String ticketNumber, String ticketOfficer,
 			String streetName, String streetNumber, String streetDescription,
 			String meterNumber, String invoiceNumber) {
 		
-		IWTimestamp paymentDate = new IWTimestamp(ticketDate);
+		try {
+			IWTimestamp paymentDate = new IWTimestamp(ticketDate);
+			paymentDate.addDays(14);
+			
+			return getAgressoDAO().addFinanceEntryParking("PARKING", user, amount,
+					paymentDate.getTimestamp(),ticketDate, info, registrationNumber, permanentNumber, carType, owner, ticketNumber, ticketOfficer, streetName,
+					streetNumber, streetDescription, meterNumber, invoiceNumber);
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error creating parking entry! Ticket number: " + ticketNumber, e);
+		}
 		
-		paymentDate.addDays(14);
-		getAgressoDAO().addFinanceEntryParking("PARKING", user, amount,
-				paymentDate.getTimestamp(),ticketDate, info, registrationNumber, permanentNumber, carType, owner, ticketNumber, ticketOfficer, streetName,
-				streetNumber, streetDescription, meterNumber, invoiceNumber);
+		return null;
+	}
+	
+	public boolean deleteParkingEntry(Long entryID) {
+		try {
+			return getAgressoDAO().deleteFinanceEntry(entryID);
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error deleting parking entry: " + entryID, e);
+		}
+		
+		return false;
 	}
 
 	protected AgressoDAO getAgressoDAO() {
