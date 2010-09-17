@@ -155,7 +155,7 @@ public class AgressoFinanceEntry implements Serializable {
 	@Column(name=AgressoFinanceEntry.COLUMN_RULING,length=30)
 	private String rulingResult;
 	
-	@Column(name=COLUMN_RULLING_PREDEFINED_TEXT,length=255)
+	@Column(name=COLUMN_RULLING_PREDEFINED_TEXT,length=1000)
 	private String rullingPredefinedText;
 	
 	@Column(name=COLUMN_RULLING_EXPLANATION_TEXT,length=1000)
