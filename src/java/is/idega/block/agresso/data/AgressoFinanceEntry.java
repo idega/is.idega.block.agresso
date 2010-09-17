@@ -2,6 +2,7 @@ package is.idega.block.agresso.data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.logging.Logger;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +14,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.idega.util.StringUtil;
 
 @Entity
 @Table(name=AgressoFinanceEntry.ENTITY_NAME)
@@ -155,7 +158,7 @@ public class AgressoFinanceEntry implements Serializable {
 	@Column(name=COLUMN_RULLING_PREDEFINED_TEXT,length=255)
 	private String rullingPredefinedText;
 	
-	@Column(name=COLUMN_RULLING_EXPLANATION_TEXT,length=255)
+	@Column(name=COLUMN_RULLING_EXPLANATION_TEXT,length=1000)
 	private String rullingExplanationText;
 	
 	@Column(name=AgressoFinanceEntry.COLUMN_IS_PROCESSED,length=1)
@@ -394,6 +397,10 @@ public class AgressoFinanceEntry implements Serializable {
 	}
 
 	public void setRullingExplanationText(String rullingExplanationText) {
+		if (!StringUtil.isEmpty(rullingExplanationText) && rullingExplanationText.length() > 1000) {
+			Logger.getLogger(getClass().getName()).warning("Just shortened too long explanation text '" + rullingExplanationText + "' to 1000 characters");
+			rullingExplanationText = rullingExplanationText.substring(0, 999);
+		}
 		this.rullingExplanationText = rullingExplanationText;
 	}
 	
