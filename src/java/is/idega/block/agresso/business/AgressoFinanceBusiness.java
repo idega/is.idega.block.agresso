@@ -87,24 +87,30 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 			getLogger().warning("Founf multiple entries for the same ticket number (" + ticketNumber + "): " + entries);
 		}
 		
-		AgressoFinanceEntry entry = entries.iterator().next();
-		if (isProtested) {
-			String alreadyProtested = entry.getIsProtested();
-			if (!"1".equals(alreadyProtested)) {
-				entry.setIsProtested("1");
-				entry.setProtestedDate(IWTimestamp.RightNow().getTimestamp());
+		try {
+			AgressoFinanceEntry entry = entries.iterator().next();
+			if (isProtested) {
+				String alreadyProtested = entry.getIsProtested();
+				if (!"1".equals(alreadyProtested)) {
+					entry.setIsProtested("1");
+					entry.setProtestedDate(IWTimestamp.RightNow().getTimestamp());
+				}
+			} else {
+				entry.setIsProtested(null);
+				entry.setProtestedDate(null);
 			}
-		} else {
-			entry.setIsProtested(null);
-			entry.setProtestedDate(null);
+			
+			entry.setRulingResult(status);
+			entry.setRulingResultDate(rullingDate);
+			entry.setRullingPredefinedText(reason);
+			entry.setRullingExplanationText(explanation);
+			
+			getAgressoDAO().persist(entry);
+		} catch (Exception e) {
+			String message = "Error while updating agresso entry: ticket number: " + ticketNumber + ", status: " + status + ", reason: " + reason +	", explanation: " +
+				explanation + ", rulling date: " + rullingDate;
+			getLogger().log(Level.WARNING, message, e);
+			throw new RuntimeException(message, e);
 		}
-		
-		entry.setRulingResult(status);
-		entry.setRulingResultDate(rullingDate);
-		entry.setRullingPredefinedText(reason);
-		entry.setRullingExplanationText(explanation);
-		
-		getAgressoDAO().persist(entry);
 	}
-
 }
