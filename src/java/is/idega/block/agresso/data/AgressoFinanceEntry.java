@@ -27,7 +27,9 @@ import com.idega.util.StringUtil;
 		query="select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.ticketNumber = :ticketNumber and (e.rulingResult is null or e.rulingResult = 'protested')")
 })
 public class AgressoFinanceEntry implements Serializable {
+	
 	private static final long serialVersionUID = -747605984016128307L;
+	
 	public static final String ENTITY_NAME = "agresso_entry";
 	public static final String COLUMN_ID = ENTITY_NAME + "id";
 	public static final String COLUMN_CREATION_DATE = "creation_date";
@@ -250,7 +252,7 @@ public class AgressoFinanceEntry implements Serializable {
 	}
 
 	public void setInfo(String info) {
-		this.info = info;
+		this.info = getShortenedText(info);
 	}
 
 	public Long getAgressoID() {
@@ -381,7 +383,7 @@ public class AgressoFinanceEntry implements Serializable {
 	}
 	
 	public void setRulingResult(String rulingResult) {
-		this.rulingResult = rulingResult;
+		this.rulingResult = getShortenedText(rulingResult, 30);
 	}
 
 	public String getRullingPredefinedText() {
@@ -389,7 +391,7 @@ public class AgressoFinanceEntry implements Serializable {
 	}
 
 	public void setRullingPredefinedText(String rullingPredefinedText) {
-		this.rullingPredefinedText = rullingPredefinedText;
+		this.rullingPredefinedText = getShortenedText(rullingPredefinedText);
 	}
 
 	public String getRullingExplanationText() {
@@ -397,11 +399,19 @@ public class AgressoFinanceEntry implements Serializable {
 	}
 
 	public void setRullingExplanationText(String rullingExplanationText) {
-		if (!StringUtil.isEmpty(rullingExplanationText) && rullingExplanationText.length() > 1000) {
-			Logger.getLogger(getClass().getName()).warning("Just shortened too long explanation text '" + rullingExplanationText + "' to 1000 characters");
-			rullingExplanationText = rullingExplanationText.substring(0, 999);
+		this.rullingExplanationText = getShortenedText(rullingExplanationText);
+	}
+	
+	private String getShortenedText(String text) {
+		return getShortenedText(text, 1000);
+	}
+	
+	private String getShortenedText(String text, int length) {
+		if (!StringUtil.isEmpty(text) && text.length() > length) {
+			Logger.getLogger(getClass().getName()).warning("Just shortened too long text '" + text + "' to " + length + " characters");
+			text = text.substring(0, length - 1);
 		}
-		this.rullingExplanationText = rullingExplanationText;
+		return text;
 	}
 	
 	@Override
