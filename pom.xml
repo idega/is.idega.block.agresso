@@ -3,21 +3,16 @@
   <parent>
     <groupId>com.idega.block.egov</groupId>
     <artifactId>com.idega.block.egov</artifactId>
-    <version>4.1.3-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
   </parent>
   <name>Agresso connection</name>
   <groupId>com.idega.block.egov</groupId>
   <artifactId>is.idega.block.agresso</artifactId>
-  <version>4.1.3-SNAPSHOT</version>
+  <version>5.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <inceptionYear>2008</inceptionYear>
   <description>idega external webservice module</description>
   
-  <scm>
-    
-    <connection>scm:cvs:ext:idegaweb@code.idega.com:/idega/cvs:com.idega.block.egov/is.idega.webservice/</connection>
-    <developerConnection>scm:cvs:ext:idegaweb@code.idega.com:/idega/cvs:com.idega.block.egov/is.idega.webservice/</developerConnection>
-  </scm>
   <developers>
     <developer>
       <name>Pall Helgason</name>
