@@ -1,5 +1,6 @@
 package is.idega.block.agresso.dao;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -16,5 +17,25 @@ public interface AgressoDAO extends GenericDao {
 			String streetName, String streetNumber, String streetDescription,
 			String meterNumber, String invoiceNumber);
 	
-	public boolean deleteFinanceEntry(Long entryID);
+	public Long addFinanceEntryParkingForParkingCard(
+			String entryType,
+			String userSSN,
+			Integer amount,
+			Timestamp paymentDate,
+			Date creationDate,
+			String info,
+			String registrationNumber,
+			String permanentNumber,
+			String carType,
+			String owner,
+			String parkingCardNumber,
+			String invoiceNumber,
+			String parkingZone,
+			Date validFrom,
+			Date validTo,
+			String apartmentIdentifier
+	);
+	
+	public <T extends Serializable> boolean deleteFinanceEntry(Long entryId, Class<T> entityClass);
+	
 }

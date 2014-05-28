@@ -2,6 +2,7 @@ package is.idega.block.agresso.business;
 
 import is.idega.block.agresso.dao.AgressoDAO;
 import is.idega.block.agresso.data.AgressoFinanceEntry;
+import is.idega.block.agresso.data.AgressoFinanceEntryForParkingCard;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -46,16 +47,71 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 		return null;
 	}
 
-	public boolean deleteParkingEntry(Long entryID) {
+	public Long createEntryInAgressoForParkingCard(
+			String userSSN,
+			Integer amount,
+			Date creationDate,
+			String info,
+			String registrationNumber,
+			String permanentNumber,
+			String carType,
+			String owner,
+			String parkingCardNumber,
+			String invoiceNumber,
+			String parkingZone,
+			Date validFrom,
+			Date validTo,
+			String apartmentIdentifier
+	) {
 		try {
-			return getAgressoDAO().deleteFinanceEntry(entryID);
+			IWTimestamp paymentDate = new IWTimestamp(creationDate);
+			paymentDate.addDays(14);
+
+			return getAgressoDAO().addFinanceEntryParkingForParkingCard(
+					"PARKING",
+					userSSN,
+					amount,
+					paymentDate.getTimestamp(),
+					creationDate,
+					info,
+					registrationNumber,
+					permanentNumber,
+					carType,
+					owner,
+					parkingCardNumber,
+					invoiceNumber,
+					parkingZone,
+					validFrom,
+					validTo,
+					apartmentIdentifier
+			);
 		} catch (Exception e) {
-			getLogger().log(Level.WARNING, "Error deleting parking entry: " + entryID, e);
+			getLogger().log(Level.WARNING, "Error creating entry in agresso table for parking card! Parking card number: " + parkingCardNumber, e);
+		}
+
+		return null;
+	}
+	
+	public boolean deleteEntryFromAgressoForParkingTicket(Long entryId) {
+		try {
+			return getAgressoDAO().deleteFinanceEntry(entryId, AgressoFinanceEntry.class);
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error deleting entry from agresso table for parking ticket. ID: " + entryId, e);
 		}
 
 		return false;
 	}
 
+	public boolean deleteEntryFromAgressoForParkingCard(Long entryId) {
+		try {
+			return getAgressoDAO().deleteFinanceEntry(entryId, AgressoFinanceEntryForParkingCard.class);
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error deleting entry from agresso table for parking card. ID: " + entryId, e);
+		}
+
+		return false;
+	}
+	
 	protected AgressoDAO getAgressoDAO() {
 		if (agressoDAO == null) {
 			ELUtil.getInstance().autowire(this);
