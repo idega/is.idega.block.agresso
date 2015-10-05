@@ -91,7 +91,7 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 
 		return null;
 	}
-	
+
 	public boolean deleteEntryFromAgressoForParkingTicket(Long entryId) {
 		try {
 			return getAgressoDAO().deleteFinanceEntry(entryId, AgressoFinanceEntry.class);
@@ -111,7 +111,7 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 
 		return false;
 	}
-	
+
 	protected AgressoDAO getAgressoDAO() {
 		if (agressoDAO == null) {
 			ELUtil.getInstance().autowire(this);
@@ -128,8 +128,7 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 	public void updateTicketProtestInfo(String ticketNumber, boolean isProtested, String status, String reason, String explanation, Timestamp rullingDate) {
 		List<AgressoFinanceEntry> entries = null;
 		try {
-			entries = getAgressoDAO().getResultList(AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER, AgressoFinanceEntry.class,
-					new Param("ticketNumber", ticketNumber));
+			entries = getAgressoDAO().getResultList(AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER, AgressoFinanceEntry.class, new Param("ticketNumber", ticketNumber));
 		} catch (Exception e) {
 			getLogger().log(Level.WARNING, "Error while trying to find entry in DB table '" + AgressoFinanceEntry.ENTITY_NAME + "' by ticket number: " + ticketNumber, e);
 			return;
@@ -140,7 +139,7 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 		}
 
 		if (entries.size() > 1) {
-			getLogger().warning("Founf multiple entries for the same ticket number (" + ticketNumber + "): " + entries);
+			getLogger().warning("Found multiple entries for the same ticket number (" + ticketNumber + "): " + entries);
 		}
 
 		try {
@@ -167,8 +166,7 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 				getAgressoDAO().persist(entry);
 			}
 		} catch (Exception e) {
-			String message = "Error while updating agresso entry: ticket number: " + ticketNumber + ", status: " + status + ", reason: " + reason +	", explanation: " +
-				explanation + ", rulling date: " + rullingDate;
+			String message = "Error while updating agresso entry: ticket number: " + ticketNumber + ", status: " + status + ", reason: " + reason +	", explanation: " + explanation + ", rulling date: " + rullingDate;
 			getLogger().log(Level.WARNING, message, e);
 			throw new RuntimeException(message, e);
 		}
