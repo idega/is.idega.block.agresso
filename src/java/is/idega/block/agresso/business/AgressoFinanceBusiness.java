@@ -1,9 +1,5 @@
 package is.idega.block.agresso.business;
 
-import is.idega.block.agresso.dao.AgressoDAO;
-import is.idega.block.agresso.data.AgressoFinanceEntry;
-import is.idega.block.agresso.data.AgressoFinanceEntryForParkingCard;
-
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -13,12 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.idega.core.business.DefaultSpringBean;
 import com.idega.core.persistence.Param;
 import com.idega.util.IWTimestamp;
 import com.idega.util.ListUtil;
 import com.idega.util.expression.ELUtil;
+
+import is.idega.block.agresso.dao.AgressoDAO;
+import is.idega.block.agresso.data.AgressoFinanceEntry;
+import is.idega.block.agresso.data.AgressoFinanceEntryForParkingCard;
 
 @Service("agressoFinanceBusiness")
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -45,6 +46,33 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 		}
 
 		return null;
+	}
+
+	@Transactional(readOnly = true)
+	public AgressoFinanceEntryForParkingCard getEntryInAgressoForParkingCard(
+			String userSSN,
+			Integer amount,
+			String registrationNumber,
+			String permanentNumber,
+			String owner,
+			String parkingZone,
+			String apartmentIdentifier
+		) {
+		return getAgressoDAO().getEntryInAgressoForParkingCard(userSSN, amount, registrationNumber, permanentNumber, owner, parkingZone, apartmentIdentifier);
+	}
+
+	@Transactional(readOnly = false)
+	public AgressoFinanceEntryForParkingCard update(AgressoFinanceEntryForParkingCard entry) {
+		if (entry == null) {
+			return null;
+		}
+
+		if (entry.getId() == null) {
+			getAgressoDAO().persist(entry);
+		} else {
+			getAgressoDAO().merge(entry);
+		}
+		return entry;
 	}
 
 	public Long createEntryInAgressoForParkingCard(
