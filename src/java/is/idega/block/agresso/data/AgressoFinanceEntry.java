@@ -27,9 +27,9 @@ import com.idega.util.StringUtil;
 		query="select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.ticketNumber = :ticketNumber and (e.rulingResult is null or e.rulingResult = 'protested')")
 })
 public class AgressoFinanceEntry implements Serializable {
-	
+
 	private static final long serialVersionUID = -747605984016128307L;
-	
+
 	public static final String ENTITY_NAME = "agresso_entry";
 	public static final String COLUMN_ID = ENTITY_NAME + "id";
 	public static final String COLUMN_CREATION_DATE = "creation_date";
@@ -42,7 +42,7 @@ public class AgressoFinanceEntry implements Serializable {
 	public static final String COLUMN_READ_DATE = "read_date";
 	public static final String COLUMN_INFO = "info";
 	public static final String COLUMN_AGRESSO_ID = "agresso_id";
-	
+
 	//parking project
 	public static final String COLUMN_CAR_REGISTRATION_NUMBER = "registration_number";
 	public static final String COLUMN_CAR_PERMANENT_NUMBER = "permanent_number";
@@ -55,51 +55,51 @@ public class AgressoFinanceEntry implements Serializable {
 	public static final String COLUMN_STREET_DESCRIPTION = "street_description";
 	public static final String COLUMN_METER_NUMBER = "meter_number";
 	public static final String COLUMN_INVOICE_NUMBER = "invoice_number";
-	
+
 	public static final String COLUMN_PROTESTED = "is_protested";
 	public static final String COLUMN_PROTESTED_DATE = "protested_date";
-	
+
 	public static final String COLUMN_RULING = "ruling_result";
 	public static final String COLUMN_RULING_RESULT_DATE = "ruling_result_date";
 	public static final String COLUMN_RULLING_PREDEFINED_TEXT = "rulling_predefined_text";
 	public static final String COLUMN_RULLING_EXPLANATION_TEXT = "rulling_explantation_text";
-	
+
 	public static final String COLUMN_IS_PROCESSED = "is_processed";
 
 	public static final String RULING_APPROVED = "approved";
 	public static final String RULING_DENIED = "denied";
-	
+
 	public static final String	NAMED_QUERY_FIND_BY_ID = "agressoFinanceEntry.findById",
 								NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON = "agressoFinanceEntry.findByTicketNumberNotRuled",
 								NAMED_QUERY_FIND_BY_TICKET_NUMBER = "agressoFinanceEntry.findByTicketNumber";
-	
+
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name=AgressoFinanceEntry.COLUMN_ID)
 	private Long id;
-	
+
 	@Column(name=AgressoFinanceEntry.COLUMN_CREATION_DATE)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date creationDate;
-	
-	@Column(name=AgressoFinanceEntry.COLUMN_ENTRY_TYPE) 
+
+	@Column(name=AgressoFinanceEntry.COLUMN_ENTRY_TYPE)
 	private String entryType;
-	
+
 	@Column(name=AgressoFinanceEntry.COLUMN_ENTRY_USER)
 	private String entryUser;
-	
+
 	@Column(name=AgressoFinanceEntry.COLUMN_ENTRY_PAYMENT_USER)
 	private String entryPaymentUser;
-	
+
 	@Column(name=AgressoFinanceEntry.COLUMN_PAYMENT_DATE)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date paymentDate;
-	
+
 	@Column(name=AgressoFinanceEntry.COLUMN_AMOUNT)
 	private Integer amount;
-	
+
 	@Column(name=AgressoFinanceEntry.COLUMN_READ,length=1)
 	private String isRead;
-	
+
 	@Column(name=AgressoFinanceEntry.COLUMN_READ_DATE)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date isReadDate;
@@ -109,7 +109,7 @@ public class AgressoFinanceEntry implements Serializable {
 
 	@Column(name=AgressoFinanceEntry.COLUMN_AGRESSO_ID)
 	private Long agressoID;
-	
+
 	@Column(name=AgressoFinanceEntry.COLUMN_CAR_REGISTRATION_NUMBER)
 	private String registrationNumber;
 
@@ -142,43 +142,42 @@ public class AgressoFinanceEntry implements Serializable {
 
 	@Column(name=AgressoFinanceEntry.COLUMN_INVOICE_NUMBER)
 	private String invoiceNumber;
-	
+
 	@Column(name=AgressoFinanceEntry.COLUMN_PROTESTED_DATE)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date protestedDate;
-	
+
 	@Column(name=AgressoFinanceEntry.COLUMN_PROTESTED,length=1)
 	private String isProtested;
-	
+
 	@Column(name=AgressoFinanceEntry.COLUMN_RULING_RESULT_DATE)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date rulingResultDate;
-	
+
 	@Column(name=AgressoFinanceEntry.COLUMN_RULING,length=30)
 	private String rulingResult;
-	
+
 	@Column(name=COLUMN_RULLING_PREDEFINED_TEXT,length=1000)
 	private String rullingPredefinedText;
-	
+
 	@Column(name=COLUMN_RULLING_EXPLANATION_TEXT,length=1000)
 	private String rullingExplanationText;
-	
+
 	@Column(name=AgressoFinanceEntry.COLUMN_IS_PROCESSED,length=1)
 	private String isProcessed;
 
-	
 	public Long getID() {
 		return this.id;
 	}
-	
+
 	public void setID(Long id) {
 		this.id = id;
 	}
-	
+
 	public Date getCreationDate() {
 		return this.creationDate;
 	}
-	
+
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
@@ -230,7 +229,7 @@ public class AgressoFinanceEntry implements Serializable {
 	public void setIsRead(String isRead) {
 		this.isRead = isRead;
 	}
-	
+
 	public String getIsProcessed() {
 		return isProcessed;
 	}
@@ -351,17 +350,14 @@ public class AgressoFinanceEntry implements Serializable {
 		this.invoiceNumber = invoiceNumber;
 	}
 
-	
 	public Date getProtestedDate() {
 		return protestedDate;
 	}
 
-	
 	public void setProtestedDate(Date protestedDate) {
 		this.protestedDate = protestedDate;
 	}
 
-	
 	public String getIsProtested() {
 		return isProtested;
 	}
@@ -373,15 +369,15 @@ public class AgressoFinanceEntry implements Serializable {
 	public Date getRulingResultDate() {
 		return rulingResultDate;
 	}
-	
+
 	public void setRulingResultDate(Date rulingResultDate) {
 		this.rulingResultDate = rulingResultDate;
 	}
-	
+
 	public String getRulingResult() {
 		return rulingResult;
 	}
-	
+
 	public void setRulingResult(String rulingResult) {
 		this.rulingResult = getShortenedText(rulingResult, 30);
 	}
@@ -401,11 +397,11 @@ public class AgressoFinanceEntry implements Serializable {
 	public void setRullingExplanationText(String rullingExplanationText) {
 		this.rullingExplanationText = getShortenedText(rullingExplanationText);
 	}
-	
+
 	private String getShortenedText(String text) {
 		return getShortenedText(text, 1000);
 	}
-	
+
 	private String getShortenedText(String text, int length) {
 		if (!StringUtil.isEmpty(text) && text.length() > length) {
 			Logger.getLogger(getClass().getName()).warning("Just shortened too long text '" + text + "' to " + length + " characters");
@@ -413,7 +409,7 @@ public class AgressoFinanceEntry implements Serializable {
 		}
 		return text;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "ID: " + getID() + ", ticket number: " + getTicketNumber();

@@ -40,9 +40,19 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 			String registrationNumber, String permanentNumber, String carType,
 			String owner, String ticketNumber, String ticketOfficer,
 			String streetName, String streetNumber, String streetDescription,
-			String meterNumber, String invoiceNumber) {
-
+			String meterNumber, String invoiceNumber
+	) {
 		try {
+			List<AgressoFinanceEntry> entries = null;
+			try {
+				entries = getResultList(AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER, AgressoFinanceEntry.class, new Param("ticketNumber", ticketNumber));
+			} catch (Exception e) {}
+			if (!ListUtil.isEmpty(entries)) {
+				AgressoFinanceEntry entry = entries.iterator().next();
+				getLogger().info("Found existing entry " + entry + " for ticket number " + ticketNumber + ", not creating another one");
+				return entry.getID();
+			}
+
 			AgressoFinanceEntry entry = new AgressoFinanceEntry();
 			entry.setAmount(amount);
 
