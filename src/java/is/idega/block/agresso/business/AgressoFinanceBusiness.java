@@ -89,11 +89,16 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 			String parkingZone,
 			Date validFrom,
 			Date validTo,
-			String apartmentIdentifier
+			String apartmentIdentifier,
+			String paymentStatus,
+			Integer splitPayment
 	) {
 		try {
 			IWTimestamp paymentDate = new IWTimestamp(creationDate);
-			paymentDate.addDays(14);
+			int delay = getAgressoDAO().getDelayForParkingCardPayment();
+			if (delay > 0) {
+				paymentDate.addDays(delay);
+			}
 
 			return getAgressoDAO().addFinanceEntryParkingForParkingCard(
 					"PARKING",
@@ -111,7 +116,9 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 					parkingZone,
 					validFrom,
 					validTo,
-					apartmentIdentifier
+					apartmentIdentifier,
+					paymentStatus,
+					splitPayment
 			);
 		} catch (Exception e) {
 			getLogger().log(Level.WARNING, "Error creating entry in agresso table for parking card! Parking card number: " + parkingCardNumber, e);
@@ -199,4 +206,5 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 			throw new RuntimeException(message, e);
 		}
 	}
+
 }

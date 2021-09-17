@@ -2,8 +2,15 @@ package is.idega.block.agresso.dao.impl;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,10 +19,15 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.idega.builder.bean.AdvancedProperty;
 import com.idega.core.persistence.Param;
 import com.idega.core.persistence.impl.GenericDaoImpl;
+import com.idega.idegaweb.IWMainApplication;
+import com.idega.util.CoreConstants;
 import com.idega.util.IWTimestamp;
 import com.idega.util.ListUtil;
+import com.idega.util.StringUtil;
+import com.idega.util.datastructures.map.MapUtil;
 
 import is.idega.block.agresso.dao.AgressoDAO;
 import is.idega.block.agresso.data.AgressoFinanceEntry;
@@ -120,8 +132,9 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 		) {
 		try {
 			List<AgressoFinanceEntryForParkingCard> entries = getResultListByInlineQuery(
-					"select e from " + AgressoFinanceEntryForParkingCard.class.getName() + " e where e.entryUser = :userSSN and e.amount = :amount and e.registrationNumber = :registrationNumber" +
-							" and e.permanentNumber = :permanentNumber and e.owner = :owner and e.parkingZone = :parkingZone and e.apartmentIdentifier = :apartmentIdentifier and e.validFrom is null and e.validTo >= :now",
+					"select e from " + AgressoFinanceEntryForParkingCard.class.getName() + " e where e.entryUser = :userSSN and e.amount = :amount and " +
+					"e.registrationNumber = :registrationNumber and e.permanentNumber = :permanentNumber and e.owner = :owner and e.parkingZone = " +
+					":parkingZone and e.apartmentIdentifier = :apartmentIdentifier and e.validFrom is null and e.validTo >= :now",
 					AgressoFinanceEntryForParkingCard.class,
 					new Param("userSSN", userSSN),
 					new Param("amount", amount),
@@ -145,6 +158,11 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 	}
 
 	@Override
+	public int getDelayForParkingCardPayment() {
+		return IWMainApplication.getDefaultIWMainApplication().getSettings().getInt("parking.card_payment_in", 3);
+	}
+
+	@Override
 	@Transactional
 	public Long addFinanceEntryParkingForParkingCard(
 			String entryType,
@@ -162,43 +180,290 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 			String parkingZone,
 			Date validFrom,
 			Date validTo,
-			String apartmentIdentifier
+			String apartmentIdentifier,
+			String paymentStatus,
+			Integer splitPayment
 	) {
 		try {
-			AgressoFinanceEntryForParkingCard entry = new AgressoFinanceEntryForParkingCard();
-			entry.setAmount(amount);
+			creationDate = creationDate == null ? IWTimestamp.getTimestampRightNow() : creationDate;
 
-			if (creationDate == null) {
-				entry.setCreationDate(IWTimestamp.getTimestampRightNow());
-			} else {
-				entry.setCreationDate(creationDate);
+			if (splitPayment != null && splitPayment > 1) {
+				Long firstEntryId = null;
+				int delay = getDelayForParkingCardPayment();
+				for (int i = 0; i < splitPayment; i++) {
+					Timestamp splitPaymentDate = null;
+
+					if (i == 0) {
+						IWTimestamp iwCreationDate = new IWTimestamp(creationDate);
+						IWTimestamp iwPaymentDate = null;
+						if (paymentDate == null) {
+							iwPaymentDate = new IWTimestamp(creationDate);
+							if (delay > 0) {
+								iwPaymentDate.addDays(delay);
+							}
+						} else {
+							iwPaymentDate = new IWTimestamp(paymentDate);
+						}
+						if (iwCreationDate.getMonth() != iwPaymentDate.getMonth()) {
+							iwPaymentDate.setDay(1);
+							iwPaymentDate.addDays(-1);
+						}
+						paymentDate = iwPaymentDate.getTimestamp();
+						splitPaymentDate = paymentDate;
+					} else {
+						IWTimestamp iwNextMonth = new IWTimestamp(creationDate);
+						iwNextMonth.setDay(1);
+						int currentMonth = iwNextMonth.getMonth();
+						iwNextMonth.setMonth((currentMonth + i));
+
+						Timestamp nextMonth = iwNextMonth.getTimestamp();
+						paymentDate = nextMonth;
+						splitPaymentDate = nextMonth;
+					}
+
+					Long id = doCreateFinanceEntryParkingForParkingCard(
+							entryType,
+							userSSN,
+							amount,
+							paymentDate,
+							creationDate,
+							info,
+							registrationNumber,
+							permanentNumber,
+							carType,
+							owner,
+							parkingCardNumber,
+							invoiceNumber,
+							parkingZone,
+							validFrom,
+							validTo,
+							apartmentIdentifier,
+							paymentStatus,
+							splitPaymentDate,
+							(i + 1)
+					);
+
+					firstEntryId = i == 0 || firstEntryId == null ? id : firstEntryId;
+				}
+
+				return firstEntryId;
 			}
 
-			entry.setEntryUser(userSSN);
-			entry.setEntryType(entryType);
-			entry.setPaymentDate(paymentDate);
-			entry.setInfo(info);
-
-			entry.setRegistrationNumber(registrationNumber);
-			entry.setPermanentNumber(permanentNumber);
-			entry.setCarType(carType);
-			entry.setOwner(owner);
-			entry.setParkingCardNumber(parkingCardNumber);
-			entry.setInvoiceNumber(invoiceNumber);
-			entry.setApartmentIdentifier(apartmentIdentifier);
-			entry.setValidFrom(validFrom);
-			entry.setValidTo(validTo);
-			entry.setParkingZone(parkingZone);
-
-			getEntityManager().persist(entry);
-
-			return entry.getId();
+			return doCreateFinanceEntryParkingForParkingCard(
+					entryType,
+					userSSN,
+					amount,
+					paymentDate,
+					creationDate,
+					info,
+					registrationNumber,
+					permanentNumber,
+					carType,
+					owner,
+					parkingCardNumber,
+					invoiceNumber,
+					parkingZone,
+					validFrom,
+					validTo,
+					apartmentIdentifier,
+					paymentStatus,
+					null,
+					1
+			);
 		} catch (Exception e) {
 			LOGGER.log(Level.WARNING, "Error creating entry for parking card in Agresso DB table. Type: " + entryType + ", for user: " + userSSN +
 					", parking card number: " + parkingCardNumber, e);
 		}
 
 		return null;
+	}
+
+	@Transactional(readOnly = false)
+	private Long doCreateFinanceEntryParkingForParkingCard(
+			String entryType,
+			String userSSN,
+			Integer amount,
+			Timestamp paymentDate,
+			Date creationDate,
+			String info,
+			String registrationNumber,
+			String permanentNumber,
+			String carType,
+			String owner,
+			String parkingCardNumber,
+			String invoiceNumber,
+			String parkingZone,
+			Date validFrom,
+			Date validTo,
+			String apartmentIdentifier,
+			String paymentStatus,
+			Timestamp splitPaymentDate,
+			Integer paymentNumber
+	) {
+		AgressoFinanceEntryForParkingCard entry = new AgressoFinanceEntryForParkingCard();
+		entry.setAmount(amount);
+
+		entry.setCreationDate(creationDate);
+
+		entry.setEntryUser(userSSN);
+		entry.setEntryType(entryType);
+		entry.setPaymentDate(paymentDate);
+		entry.setInfo(info);
+
+		entry.setRegistrationNumber(registrationNumber);
+		entry.setPermanentNumber(permanentNumber);
+		entry.setCarType(carType);
+		entry.setOwner(owner);
+		entry.setParkingCardNumber(parkingCardNumber);
+		entry.setInvoiceNumber(invoiceNumber);
+		entry.setApartmentIdentifier(apartmentIdentifier);
+		entry.setValidFrom(validFrom);
+		entry.setValidTo(validTo);
+		entry.setParkingZone(parkingZone);
+
+		entry.setPaymentStatus(paymentStatus);
+		entry.setSplitPaymentDate(splitPaymentDate);
+		entry.setPaymentNumber(paymentNumber);
+
+		getEntityManager().persist(entry);
+
+		return entry.getId();
+	}
+
+	@Override
+	public List<AgressoFinanceEntryForParkingCard> getByRegistrationNumber(String registrationNumber, boolean validOnly) {
+		if (StringUtil.isEmpty(registrationNumber)) {
+			return null;
+		}
+
+		try {
+			registrationNumber = registrationNumber.trim();
+			registrationNumber = registrationNumber.toUpperCase();
+			Param[] params = new Param[2];
+			params[0] = new Param(AgressoFinanceEntryForParkingCard.PARAM_REGISTRATION_NUMBER, registrationNumber);
+			params[1] = new Param(AgressoFinanceEntryForParkingCard.PARAM_VALID_TO, IWTimestamp.RightNow().getTimestamp());
+			if (validOnly) {
+				return getResultList(AgressoFinanceEntryForParkingCard.NAMED_QUERY_FIND_VALID_BY_REGISTRATION_NUMBER, AgressoFinanceEntryForParkingCard.class, params);
+			}
+
+			return getResultList(AgressoFinanceEntryForParkingCard.NAMED_QUERY_FIND_BY_REGISTRATION_NUMBER, AgressoFinanceEntryForParkingCard.class, params);
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error getting finance entry/entries of parking card for vehicle " + registrationNumber);
+		}
+
+		return null;
+	}
+
+	@Override
+	public List<AgressoFinanceEntryForParkingCard> getByRegistrationNumberAndParkingCardNumber(String registrationNumber, String parkingCardNumber) {
+		if (StringUtil.isEmpty(registrationNumber) || StringUtil.isEmpty(parkingCardNumber)) {
+			return null;
+		}
+
+		registrationNumber = registrationNumber.trim();
+		registrationNumber = registrationNumber.toUpperCase();
+
+		Map<String, List<AgressoFinanceEntryForParkingCard>> data = getByRegistrationNumbersAndParkingCardsNumbers(
+				Arrays.asList(
+						new AdvancedProperty(registrationNumber, parkingCardNumber)
+				)
+		);
+		if (MapUtil.isEmpty(data)) {
+			return null;
+		}
+
+		return data.get(registrationNumber);
+	}
+
+	@Override
+	public Map<String, List<AgressoFinanceEntryForParkingCard>> getByRegistrationNumbersAndParkingCardsNumbers(List<AdvancedProperty> carRegistrationAndCardNumbers) {
+		if (ListUtil.isEmpty(carRegistrationAndCardNumbers)) {
+			return null;
+		}
+
+		try {
+			Set<String> registrationNumbers = new HashSet<>();
+			Set<String> parkingCardsNumbers = new HashSet<>();
+			Map<String, AdvancedProperty> mapping = new HashMap<>();
+			for (AdvancedProperty carRegistrationAndCardNumber: carRegistrationAndCardNumbers) {
+				String registrationNumber = carRegistrationAndCardNumber.getId();
+				String cardNumber = carRegistrationAndCardNumber.getValue();
+				if (StringUtil.isEmpty(registrationNumber) || StringUtil.isEmpty(cardNumber)) {
+					continue;
+				}
+
+				registrationNumber = registrationNumber.trim();
+				registrationNumber = registrationNumber.toUpperCase();
+				carRegistrationAndCardNumber.setId(registrationNumber);
+				registrationNumbers.add(registrationNumber);
+				parkingCardsNumbers.add(cardNumber);
+
+				mapping.put(registrationNumber.concat(CoreConstants.AT).concat(cardNumber), carRegistrationAndCardNumber);
+			}
+
+			List<AgressoFinanceEntryForParkingCard> data = getResultList(
+					AgressoFinanceEntryForParkingCard.NAMED_QUERY_FIND_BY_REGISTRATION_NUMBERS_AND_CARDS_NUMBERS,
+					AgressoFinanceEntryForParkingCard.class,
+					new Param(AgressoFinanceEntryForParkingCard.PARAM_REGISTRATION_NUMBER, registrationNumbers),
+					new Param(AgressoFinanceEntryForParkingCard.PARAM_CARD_NUMBER, parkingCardsNumbers)
+			);
+			if (ListUtil.isEmpty(data)) {
+				return null;
+			}
+
+			Map<String, List<AgressoFinanceEntryForParkingCard>> results = new LinkedHashMap<>();
+			for (AgressoFinanceEntryForParkingCard entry: data) {
+				String registrationNumber = entry.getRegistrationNumber();
+				String cardNumber = entry.getParkingCardNumber();
+				if (StringUtil.isEmpty(registrationNumber) || StringUtil.isEmpty(cardNumber)) {
+					continue;
+				}
+
+				String key = registrationNumber.concat(CoreConstants.AT).concat(cardNumber);
+				if (mapping.containsKey(key)) {
+					List<AgressoFinanceEntryForParkingCard> entriesForCar = results.get(registrationNumber);
+					if (entriesForCar == null) {
+						entriesForCar = new ArrayList<>();
+						results.put(registrationNumber, entriesForCar);
+					}
+					entriesForCar.add(entry);
+				}
+			}
+			return results;
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error getting finance entry/entries of parking card for vehicle(s) and card(s) number(s) " + carRegistrationAndCardNumbers, e);
+		}
+
+		return null;
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public boolean setStatusForParkingCard(String registrationNumber, String parkingCardNumber, String status) {
+		List<AgressoFinanceEntryForParkingCard> cards = null;
+		try {
+			cards = getByRegistrationNumberAndParkingCardNumber(registrationNumber, parkingCardNumber);
+			if (ListUtil.isEmpty(cards)) {
+				getLogger().warning("Did not find finance entry/entries of parking card for vehicle " + registrationNumber + " and card number " + parkingCardNumber);
+				return false;
+			}
+
+			for (AgressoFinanceEntryForParkingCard card: cards) {
+				card.setPaymentStatus(status);
+				merge(card);
+			}
+
+			getLogger().info("Set status '" + status + "' for parking cards " + cards);
+			return true;
+		} catch (Exception e) {
+			getLogger().log(
+					Level.WARNING,
+					"Error setting status '" + status + "' for parking cards " + cards + " for vehicle " + registrationNumber + " and card number " + parkingCardNumber,
+					e
+			);
+		}
+
+		return false;
 	}
 
 }
