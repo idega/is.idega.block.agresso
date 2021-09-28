@@ -55,7 +55,7 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 
 	private static final long serialVersionUID = 2990021991159098091L;
 
-	static final String TABLE_NAME = "agresso_entry_parking_card";
+	public static final String TABLE_NAME = "agresso_entry_parking_card";
 
 	public static final String	NAMED_QUERY_FIND_BY_ID = "parkingCardAgressoEntry.findById",
 								NAMED_QUERY_FIND_BY_REGISTRATION_NUMBER = "parkingCardAgressoEntry.findByRegistrationNumber",
