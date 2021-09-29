@@ -186,36 +186,40 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 	) {
 		try {
 			creationDate = creationDate == null ? IWTimestamp.getTimestampRightNow() : creationDate;
+			IWTimestamp payFrom = paymentDate != null ?
+					new IWTimestamp(paymentDate) :
+					validFrom == null ? new IWTimestamp(creationDate) : new IWTimestamp(validFrom);
 
 			if (splitPayment != null && splitPayment > 1) {
 				Long firstEntryId = null;
 				int delay = getDelayForParkingCardPayment();
+				IWTimestamp lastMonth = null;
 				for (int i = 0; i < splitPayment; i++) {
 					Timestamp splitPaymentDate = null;
 
 					if (i == 0) {
-						IWTimestamp iwCreationDate = new IWTimestamp(creationDate);
 						IWTimestamp iwPaymentDate = null;
 						if (paymentDate == null) {
-							iwPaymentDate = new IWTimestamp(creationDate);
-							if (delay > 0) {
+							iwPaymentDate = new IWTimestamp(payFrom);
+							if (paymentDate == null && delay > 0) {
 								iwPaymentDate.addDays(delay);
 							}
 						} else {
 							iwPaymentDate = new IWTimestamp(paymentDate);
 						}
-						if (iwCreationDate.getMonth() != iwPaymentDate.getMonth()) {
-							iwPaymentDate.setDay(1);
-							iwPaymentDate.addDays(-1);
-						}
+						lastMonth = iwPaymentDate;
 						paymentDate = iwPaymentDate.getTimestamp();
 						splitPaymentDate = paymentDate;
 					} else {
-						IWTimestamp iwNextMonth = new IWTimestamp(creationDate);
-						iwNextMonth.setDay(1);
+						IWTimestamp iwNextMonth = new IWTimestamp(payFrom);
 						int currentMonth = iwNextMonth.getMonth();
 						iwNextMonth.setMonth((currentMonth + i));
+						//	Checking if not jumped over a month, i.e. from January 30th to March 2 IF February has 28 days
+						while (iwNextMonth.getMonth() - lastMonth.getMonth() > 1) {
+							iwNextMonth.addDays(-1);
+						}
 
+						lastMonth = iwNextMonth;
 						Timestamp nextMonth = iwNextMonth.getTimestamp();
 						paymentDate = nextMonth;
 						splitPaymentDate = nextMonth;
