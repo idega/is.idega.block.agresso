@@ -387,6 +387,6 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 	@Override
 	public String toString() {
 		return "Agresso entry for parking card. ID: " + getId() + ", car number: " + getRegistrationNumber() + ", parking card number: " +
-				getParkingCardNumber() + ", valid to: " + getValidTo() + ", payment status: " + getPaymentStatus();
+				getParkingCardNumber() + ", valid to: " + getValidTo() + ", payment status: " + getPaymentStatus() + ", amount: " + getAmount();
 	}
 }
