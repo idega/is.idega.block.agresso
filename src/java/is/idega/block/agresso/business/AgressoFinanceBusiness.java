@@ -49,7 +49,7 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 	}
 
 	@Transactional(readOnly = true)
-	public AgressoFinanceEntryForParkingCard getEntryInAgressoForParkingCard(
+	public List<AgressoFinanceEntryForParkingCard> getEntriesInAgressoForParkingCard(
 			String userSSN,
 			Integer amount,
 			String registrationNumber,
@@ -58,7 +58,7 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 			String parkingZone,
 			String apartmentIdentifier
 		) {
-		return getAgressoDAO().getEntryInAgressoForParkingCard(userSSN, amount, registrationNumber, permanentNumber, owner, parkingZone, apartmentIdentifier);
+		return getAgressoDAO().getEntriesInAgressoForParkingCard(userSSN, amount, registrationNumber, permanentNumber, owner, parkingZone, apartmentIdentifier);
 	}
 
 	@Transactional(readOnly = false)

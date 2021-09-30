@@ -121,7 +121,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 	}
 
 	@Override
-	public AgressoFinanceEntryForParkingCard getEntryInAgressoForParkingCard(
+	public List<AgressoFinanceEntryForParkingCard> getEntriesInAgressoForParkingCard(
 			String userSSN,
 			Integer amount,
 			String registrationNumber,
@@ -129,9 +129,9 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 			String owner,
 			String parkingZone,
 			String apartmentIdentifier
-		) {
+	) {
 		try {
-			List<AgressoFinanceEntryForParkingCard> entries = getResultListByInlineQuery(
+			return getResultListByInlineQuery(
 					"select e from " + AgressoFinanceEntryForParkingCard.class.getName() + " e where e.entryUser = :userSSN and e.amount = :amount and " +
 					"e.registrationNumber = :registrationNumber and e.permanentNumber = :permanentNumber and e.owner = :owner and e.parkingZone = " +
 					":parkingZone and e.apartmentIdentifier = :apartmentIdentifier and e.validFrom is null and e.validTo >= :now",
@@ -145,7 +145,6 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 					new Param("apartmentIdentifier", apartmentIdentifier),
 					new Param("now", IWTimestamp.RightNow().getDate())
 			);
-			return ListUtil.isEmpty(entries) ? null : entries.iterator().next();
 		} catch (Exception e) {
 			getLogger().log(
 					Level.WARNING,

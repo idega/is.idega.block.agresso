@@ -43,7 +43,7 @@ public interface AgressoDAO extends GenericDao {
 			Integer splitPayment
 	);
 
-	public AgressoFinanceEntryForParkingCard getEntryInAgressoForParkingCard(
+	public List<AgressoFinanceEntryForParkingCard> getEntriesInAgressoForParkingCard(
 			String userSSN,
 			Integer amount,
 			String registrationNumber,
