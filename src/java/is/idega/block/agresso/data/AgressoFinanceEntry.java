@@ -17,6 +17,8 @@ import javax.persistence.TemporalType;
 
 import com.idega.util.StringUtil;
 
+import is.idega.block.agresso.AgressoConstants;
+
 @Entity
 @Table(name=AgressoFinanceEntry.ENTITY_NAME)
 @NamedQueries({
@@ -66,7 +68,7 @@ public class AgressoFinanceEntry implements Serializable {
 
 	public static final String COLUMN_IS_PROCESSED = "is_processed";
 
-	public static final String RULING_APPROVED = "approved";
+	public static final String RULING_APPROVED = AgressoConstants.TICKET_APPEAL_APPROVED;
 	public static final String RULING_DENIED = "denied";
 
 	public static final String	NAMED_QUERY_FIND_BY_ID = "agressoFinanceEntry.findById",
