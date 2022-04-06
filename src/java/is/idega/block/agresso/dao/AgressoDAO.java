@@ -53,7 +53,7 @@ public interface AgressoDAO extends GenericDao {
 			String apartmentIdentifier
 	);
 
-	public List<AgressoFinanceEntryForParkingCard> getByRegistrationNumber(String registrationNumber, boolean validOnly);
+	public List<AgressoFinanceEntryForParkingCard> getByRegistrationNumber(String registrationNumber, Timestamp validTo, boolean validOnly);
 
 	public List<AgressoFinanceEntryForParkingCard> getByRegistrationNumberAndParkingCardNumber(String registrationNumber, String parkingCardNumber);
 

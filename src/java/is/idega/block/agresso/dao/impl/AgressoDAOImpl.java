@@ -23,6 +23,7 @@ import com.idega.builder.bean.AdvancedProperty;
 import com.idega.core.persistence.Param;
 import com.idega.core.persistence.impl.GenericDaoImpl;
 import com.idega.idegaweb.IWMainApplication;
+import com.idega.util.ArrayUtil;
 import com.idega.util.CoreConstants;
 import com.idega.util.IWTimestamp;
 import com.idega.util.ListUtil;
@@ -334,22 +335,43 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 	}
 
 	@Override
-	public List<AgressoFinanceEntryForParkingCard> getByRegistrationNumber(String registrationNumber, boolean validOnly) {
+	public List<AgressoFinanceEntryForParkingCard> getByRegistrationNumber(String registrationNumber, Timestamp validTo, boolean validOnly) {
 		if (StringUtil.isEmpty(registrationNumber)) {
 			return null;
 		}
 
 		try {
 			registrationNumber = registrationNumber.trim();
-			registrationNumber = registrationNumber.toUpperCase();
-			Param[] params = new Param[2];
-			params[0] = new Param(AgressoFinanceEntryForParkingCard.PARAM_REGISTRATION_NUMBER, registrationNumber);
-			params[1] = new Param(AgressoFinanceEntryForParkingCard.PARAM_VALID_TO, IWTimestamp.RightNow().getTimestamp());
-			if (validOnly) {
-				return getResultList(AgressoFinanceEntryForParkingCard.NAMED_QUERY_FIND_VALID_BY_REGISTRATION_NUMBER, AgressoFinanceEntryForParkingCard.class, params);
+			if (StringUtil.isEmpty(registrationNumber)) {
+				return null;
 			}
 
-			return getResultList(AgressoFinanceEntryForParkingCard.NAMED_QUERY_FIND_BY_REGISTRATION_NUMBER, AgressoFinanceEntryForParkingCard.class, params);
+			registrationNumber = registrationNumber.toUpperCase();
+
+			List<Param> params = new ArrayList<>();
+			params.add(new Param(AgressoFinanceEntryForParkingCard.PARAM_REGISTRATION_NUMBER, registrationNumber));
+			if (validOnly) {
+				return getResultList(
+						AgressoFinanceEntryForParkingCard.NAMED_QUERY_FIND_VALID_BY_REGISTRATION_NUMBER,
+						AgressoFinanceEntryForParkingCard.class,
+						ArrayUtil.convertListToArray(params)
+				);
+			}
+
+			if (validTo == null) {
+				return getResultList(
+						AgressoFinanceEntryForParkingCard.NAMED_QUERY_FIND_BY_REGISTRATION_NUMBER,
+						AgressoFinanceEntryForParkingCard.class,
+						ArrayUtil.convertListToArray(params)
+				);
+			}
+
+			params.add(new Param(AgressoFinanceEntryForParkingCard.PARAM_VALID_TO, validTo));
+			return getResultList(
+					AgressoFinanceEntryForParkingCard.NAMED_QUERY_FIND_BY_REGISTRATION_NUMBER_AND_VALID_TO,
+					AgressoFinanceEntryForParkingCard.class,
+					ArrayUtil.convertListToArray(params)
+			);
 		} catch (Exception e) {
 			getLogger().log(Level.WARNING, "Error getting finance entry/entries of parking card for vehicle " + registrationNumber);
 		}

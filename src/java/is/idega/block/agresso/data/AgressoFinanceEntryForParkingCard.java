@@ -33,17 +33,20 @@ import is.idega.block.agresso.AgressoConstants;
 	@NamedQuery(
 			name=AgressoFinanceEntryForParkingCard.NAMED_QUERY_FIND_BY_REGISTRATION_NUMBER,
 			query="select e from is.idega.block.agresso.data.AgressoFinanceEntryForParkingCard e where e.registrationNumber = :" +
+					AgressoFinanceEntryForParkingCard.PARAM_REGISTRATION_NUMBER + " order by e.creationDate desc"
+	),
+	@NamedQuery(
+			name=AgressoFinanceEntryForParkingCard.NAMED_QUERY_FIND_BY_REGISTRATION_NUMBER_AND_VALID_TO,
+			query="select e from is.idega.block.agresso.data.AgressoFinanceEntryForParkingCard e where e.registrationNumber = :" +
 					AgressoFinanceEntryForParkingCard.PARAM_REGISTRATION_NUMBER + " and e.validTo >= :" + AgressoFinanceEntryForParkingCard.PARAM_VALID_TO +
 					" order by e.creationDate desc"
-	)
-	,
+	),
 	@NamedQuery(
 			name=AgressoFinanceEntryForParkingCard.NAMED_QUERY_FIND_VALID_BY_REGISTRATION_NUMBER,
 			query="select e from is.idega.block.agresso.data.AgressoFinanceEntryForParkingCard e where e.registrationNumber = :" +
 					AgressoFinanceEntryForParkingCard.PARAM_REGISTRATION_NUMBER + " and e.validTo >= :" + AgressoFinanceEntryForParkingCard.PARAM_VALID_TO +
 					" and (e.paymentStatus is null or e.paymentStatus = '" + AgressoConstants.PARKING_CARD_STATUS_SUCCESS + "') order by e.creationDate desc"
-	)
-	,
+	),
 	@NamedQuery(
 			name=AgressoFinanceEntryForParkingCard.NAMED_QUERY_FIND_BY_REGISTRATION_NUMBERS_AND_CARDS_NUMBERS,
 			query="select e from is.idega.block.agresso.data.AgressoFinanceEntryForParkingCard e where e.registrationNumber in (:" +
@@ -59,6 +62,7 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 
 	public static final String	NAMED_QUERY_FIND_BY_ID = "parkingCardAgressoEntry.findById",
 								NAMED_QUERY_FIND_BY_REGISTRATION_NUMBER = "parkingCardAgressoEntry.findByRegistrationNumber",
+								NAMED_QUERY_FIND_BY_REGISTRATION_NUMBER_AND_VALID_TO = "parkingCardAgressoEntry.findByRegistrationNumberAndValidTo",
 								NAMED_QUERY_FIND_VALID_BY_REGISTRATION_NUMBER = "parkingCardAgressoEntry.findValidByRegistrationNumber",
 								NAMED_QUERY_FIND_BY_REGISTRATION_NUMBERS_AND_CARDS_NUMBERS = "parkingCardAgressoEntry.findByRegistrationNumbersAndCarsdNumbers",
 
@@ -387,6 +391,6 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 	@Override
 	public String toString() {
 		return "Agresso entry for parking card. ID: " + getId() + ", car number: " + getRegistrationNumber() + ", parking card number: " +
-				getParkingCardNumber() + ", valid to: " + getValidTo() + ", payment status: " + getPaymentStatus() + ", amount: " + getAmount();
+				getParkingCardNumber() + ", valid to: " + getValidTo() + ", payment status: " + getPaymentStatus() + ", amount: " + getAmount() + ", created: " + getCreationDate();
 	}
 }
