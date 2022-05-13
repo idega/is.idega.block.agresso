@@ -22,11 +22,27 @@ import is.idega.block.agresso.AgressoConstants;
 @Entity
 @Table(name=AgressoFinanceEntry.ENTITY_NAME)
 @NamedQueries({
-	@NamedQuery(name=AgressoFinanceEntry.NAMED_QUERY_FIND_BY_ID, query="select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.id = :id"),
-	@NamedQuery(name=AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER,
-		query="select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.ticketNumber = :ticketNumber"),
-	@NamedQuery(name=AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON,
-		query="select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.ticketNumber = :ticketNumber and (e.rulingResult is null or e.rulingResult = 'protested')")
+	@NamedQuery(
+			name=AgressoFinanceEntry.NAMED_QUERY_FIND_BY_ID,
+			query="select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.id = :id"
+	),
+	@NamedQuery(
+			name=AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER,
+			query="select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.ticketNumber = :ticketNumber"
+	),
+	@NamedQuery(
+			name=AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON,
+			query="select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.ticketNumber = :ticketNumber and (e.rulingResult is null or e.rulingResult = 'protested')"
+	),
+	@NamedQuery(
+			name = AgressoFinanceEntry.NAMED_QUERY_FIND_UNREAD,
+			query = "select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.isRead is null or e.isRead = '0'"
+	),
+	@NamedQuery(
+			name = AgressoFinanceEntry.NAMED_QUERY_FIND_APPROVED_APPEALS,
+			query = "select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.rulingResultDate >= :from and e.rulingResult = '" +
+			AgressoConstants.TICKET_APPEAL_APPROVED + "'"
+	)
 })
 public class AgressoFinanceEntry implements Serializable {
 
@@ -73,7 +89,9 @@ public class AgressoFinanceEntry implements Serializable {
 
 	public static final String	NAMED_QUERY_FIND_BY_ID = "agressoFinanceEntry.findById",
 								NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON = "agressoFinanceEntry.findByTicketNumberNotRuled",
-								NAMED_QUERY_FIND_BY_TICKET_NUMBER = "agressoFinanceEntry.findByTicketNumber";
+								NAMED_QUERY_FIND_BY_TICKET_NUMBER = "agressoFinanceEntry.findByTicketNumber",
+								NAMED_QUERY_FIND_UNREAD = "agressoFinanceEntry.findUnread",
+								NAMED_QUERY_FIND_APPROVED_APPEALS = "agressoFinanceEntry.findApprovedAppeals";
 
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name=AgressoFinanceEntry.COLUMN_ID)
