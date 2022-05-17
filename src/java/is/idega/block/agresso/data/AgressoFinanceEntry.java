@@ -42,6 +42,15 @@ import is.idega.block.agresso.AgressoConstants;
 			name = AgressoFinanceEntry.NAMED_QUERY_FIND_APPROVED_APPEALS,
 			query = "select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.rulingResultDate >= :from and e.rulingResult = '" +
 			AgressoConstants.TICKET_APPEAL_APPROVED + "'"
+	),
+	@NamedQuery(
+			name = AgressoFinanceEntry.NAMED_QUERY_FIND_DENIED_APPEALS,
+			query = "select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.rulingResultDate >= :from and e.rulingResult = '" +
+			AgressoConstants.TICKET_APPEAL_DENIED + "'"
+	),
+	@NamedQuery(
+			name = AgressoFinanceEntry.NAMED_QUERY_FIND_RE_OPENED,
+			query = "select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.reOpenDate >= :from"
 	)
 })
 public class AgressoFinanceEntry implements Serializable {
@@ -77,6 +86,8 @@ public class AgressoFinanceEntry implements Serializable {
 	public static final String COLUMN_PROTESTED = "is_protested";
 	public static final String COLUMN_PROTESTED_DATE = "protested_date";
 
+	public static final String COLUMN_RE_OPEN_DATE = "re_open_date";
+
 	public static final String COLUMN_RULING = "ruling_result";
 	public static final String COLUMN_RULING_RESULT_DATE = "ruling_result_date";
 	public static final String COLUMN_RULLING_PREDEFINED_TEXT = "rulling_predefined_text";
@@ -91,7 +102,9 @@ public class AgressoFinanceEntry implements Serializable {
 								NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON = "agressoFinanceEntry.findByTicketNumberNotRuled",
 								NAMED_QUERY_FIND_BY_TICKET_NUMBER = "agressoFinanceEntry.findByTicketNumber",
 								NAMED_QUERY_FIND_UNREAD = "agressoFinanceEntry.findUnread",
-								NAMED_QUERY_FIND_APPROVED_APPEALS = "agressoFinanceEntry.findApprovedAppeals";
+								NAMED_QUERY_FIND_APPROVED_APPEALS = "agressoFinanceEntry.findApprovedAppeals",
+								NAMED_QUERY_FIND_DENIED_APPEALS = "agressoFinanceEntry.findDeniedAppeals",
+								NAMED_QUERY_FIND_RE_OPENED = "agressoFinanceEntry.findReOpened";
 
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name=AgressoFinanceEntry.COLUMN_ID)
@@ -185,6 +198,10 @@ public class AgressoFinanceEntry implements Serializable {
 
 	@Column(name=AgressoFinanceEntry.COLUMN_IS_PROCESSED,length=1)
 	private String isProcessed;
+
+	@Column(name=AgressoFinanceEntry.COLUMN_RE_OPEN_DATE)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date reOpenDate;
 
 	public Long getID() {
 		return this.id;
@@ -428,6 +445,14 @@ public class AgressoFinanceEntry implements Serializable {
 			text = text.substring(0, length - 1);
 		}
 		return text;
+	}
+
+	public Date getReOpenDate() {
+		return reOpenDate;
+	}
+
+	public void setReOpenDate(Date reOpenDate) {
+		this.reOpenDate = reOpenDate;
 	}
 
 	@Override
