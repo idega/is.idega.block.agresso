@@ -9,6 +9,7 @@ import java.util.Map;
 import com.idega.builder.bean.AdvancedProperty;
 import com.idega.core.persistence.GenericDao;
 
+import is.idega.block.agresso.data.AgressoFinanceEntry;
 import is.idega.block.agresso.data.AgressoFinanceEntryForParkingCard;
 
 public interface AgressoDAO extends GenericDao {
@@ -64,5 +65,10 @@ public interface AgressoDAO extends GenericDao {
 	public <T extends Serializable> boolean deleteFinanceEntry(Long entryId, Class<T> entityClass);
 
 	public int getDelayForParkingCardPayment();
+
+	public AgressoFinanceEntry getParkingEntryByTicketNumber(String ticketNumber);
+
+	public AgressoFinanceEntry updateAgressoFinanceEntry(AgressoFinanceEntry entry);
+
 
 }

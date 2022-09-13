@@ -491,4 +491,44 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 		return false;
 	}
 
+	@Override
+	public AgressoFinanceEntry getParkingEntryByTicketNumber(String ticketNumber) {
+		try {
+			List<AgressoFinanceEntry> entries = null;
+			try {
+				entries = getResultList(AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER, AgressoFinanceEntry.class, new Param("ticketNumber", ticketNumber));
+			} catch (Exception e) {}
+			if (!ListUtil.isEmpty(entries)) {
+				AgressoFinanceEntry entry = entries.iterator().next();
+				getLogger().info("Found existing entry " + entry + " for ticket number " + ticketNumber);
+				return entry;
+			}
+		} catch (Exception e) {
+			LOGGER.log(Level.WARNING, "Error getting parking entry for financial system by ticket number " + ticketNumber, e);
+		}
+
+		return null;
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public AgressoFinanceEntry updateAgressoFinanceEntry(AgressoFinanceEntry entry) {
+		if (entry == null) {
+			getLogger().warning("AgressoFinanceEntry is not provided");
+			return entry;
+		}
+
+		try {
+			if (entry.getAgressoID() == null) {
+				persist(entry);
+			} else {
+				merge(entry);
+			}
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Could not create/update the agresso finance entry with ID " + entry.getAgressoID() + ". Error message was: " + e.getLocalizedMessage(), e);
+		}
+		return entry;
+
+	}
+
 }
