@@ -38,9 +38,10 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 			IWTimestamp paymentDate = new IWTimestamp(ticketDate);
 			paymentDate.addDays(14);
 
-			return getAgressoDAO().addFinanceEntryParking("PARKING", user, amount,
+			AgressoFinanceEntry entry = getAgressoDAO().addFinanceEntryParking("PARKING", user, amount,
 					paymentDate.getTimestamp(),ticketDate, info, registrationNumber, permanentNumber, carType, owner, ticketNumber, ticketOfficer, streetName,
 					streetNumber, streetDescription, meterNumber, invoiceNumber);
+			return entry == null ? null : entry.getID();
 		} catch (Exception e) {
 			getLogger().log(Level.WARNING, "Error creating parking entry! Ticket number: " + ticketNumber, e);
 		}

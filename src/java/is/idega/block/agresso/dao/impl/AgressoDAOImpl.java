@@ -43,12 +43,13 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 
 	@Override
 	public Long addFinanceEntry(String entryType, String userSSN, Integer amount, Timestamp paymentDate, String info) {
-		return addFinanceEntryParking(entryType, userSSN, amount, paymentDate, null, info, null, null, null, null, null, null, null, null, null, null, null);
+		AgressoFinanceEntry entry = addFinanceEntryParking(entryType, userSSN, amount, paymentDate, null, info, null, null, null, null, null, null, null, null, null, null, null);
+		return entry == null || entry.getID() == null ? null : entry.getID();
 	}
 
 	@Override
 	@Transactional(readOnly = false)
-	public Long addFinanceEntryParking(String entryType, String userSSN,
+	public AgressoFinanceEntry addFinanceEntryParking(String entryType, String userSSN,
 			Integer amount, Timestamp paymentDate, Date creationDate, String info,
 			String registrationNumber, String permanentNumber, String carType,
 			String owner, String ticketNumber, String ticketOfficer,
@@ -63,7 +64,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 			if (!ListUtil.isEmpty(entries)) {
 				AgressoFinanceEntry entry = entries.iterator().next();
 				getLogger().info("Found existing entry " + entry + " for ticket number " + ticketNumber + ", not creating another one");
-				return entry.getID();
+				return entry;
 			}
 
 			AgressoFinanceEntry entry = new AgressoFinanceEntry();
@@ -94,7 +95,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 
 			getEntityManager().persist(entry);
 
-			return entry.getID();
+			return entry.getID() == null ? null : entry;
 		} catch (Exception e) {
 			LOGGER.log(Level.WARNING, "Error creating entry in Agresso DB table. Type: " + entryType + ", for user: " + userSSN +", ticket number: " + ticketNumber, e);
 		}
