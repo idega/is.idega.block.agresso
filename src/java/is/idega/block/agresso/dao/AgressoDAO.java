@@ -83,5 +83,6 @@ public interface AgressoDAO extends GenericDao {
 
 	public AgressoFinanceEntry updateAgressoFinanceEntry(AgressoFinanceEntry entry);
 
+	public void setAsRead(Long entryId, boolean read, Date readDate);
 
 }

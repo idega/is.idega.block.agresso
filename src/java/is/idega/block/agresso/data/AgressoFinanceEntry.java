@@ -457,6 +457,6 @@ public class AgressoFinanceEntry implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ID: " + getID() + ", ticket number: " + getTicketNumber();
+		return "ID: " + getID() + ", ticket number: " + getTicketNumber() + ", amount: " + getAmount();
 	}
 }

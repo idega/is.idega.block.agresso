@@ -520,7 +520,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 		}
 
 		try {
-			if (entry.getAgressoID() == null) {
+			if (entry.getID() == null) {
 				persist(entry);
 			} else {
 				merge(entry);
@@ -530,6 +530,27 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 		}
 		return entry;
 
+	}
+
+	@Transactional(readOnly = false)
+	public void setAsRead(Long entryId, boolean read, Date readDate) {
+		if (entryId == null) {
+			return;
+		}
+
+		AgressoFinanceEntry entry = null;
+		try {
+			entry = getSingleResult(AgressoFinanceEntry.NAMED_QUERY_FIND_BY_ID, AgressoFinanceEntry.class, new Param("id", entryId));
+			if (entry == null) {
+				return;
+			}
+
+			entry.setIsReadDate(readDate == null ? IWTimestamp.RightNow().getDate() : readDate);
+			entry.setIsRead(read ? String.valueOf(1) : null);
+			merge(entry);
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error setting fin. entry " + entry + " as " + (read ? "read" : "not read"), e);
+		}
 	}
 
 }
