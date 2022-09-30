@@ -93,7 +93,11 @@ public class AgressoFinanceEntry implements Serializable {
 	public static final String COLUMN_RULLING_PREDEFINED_TEXT = "rulling_predefined_text";
 	public static final String COLUMN_RULLING_EXPLANATION_TEXT = "rulling_explantation_text";
 
-	public static final String COLUMN_IS_PROCESSED = "is_processed";
+	public static final String	COLUMN_IS_PROCESSED = "is_processed",
+
+								COLUMN_BANK_CODE = "bank_code",
+								COLUMN_BANK_LEDGER = "bank_ledger",
+								COLUMN_BANK_ACCOUNT_NUMBER = "bank_account_number";
 
 	public static final String RULING_APPROVED = AgressoConstants.TICKET_APPEAL_APPROVED;
 	public static final String RULING_DENIED = "denied";
@@ -202,6 +206,15 @@ public class AgressoFinanceEntry implements Serializable {
 	@Column(name=AgressoFinanceEntry.COLUMN_RE_OPEN_DATE)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date reOpenDate;
+
+	@Column(name=AgressoFinanceEntry.COLUMN_BANK_CODE)
+	private String bankCode;
+
+	@Column(name=AgressoFinanceEntry.COLUMN_BANK_LEDGER)
+	private String bankLedger;
+
+	@Column(name=AgressoFinanceEntry.COLUMN_BANK_ACCOUNT_NUMBER)
+	private String bankAccountNumber;
 
 	public Long getID() {
 		return this.id;
@@ -453,6 +466,30 @@ public class AgressoFinanceEntry implements Serializable {
 
 	public void setReOpenDate(Date reOpenDate) {
 		this.reOpenDate = reOpenDate;
+	}
+
+	public String getBankCode() {
+		return bankCode;
+	}
+
+	public void setBankCode(String bankCode) {
+		this.bankCode = bankCode;
+	}
+
+	public String getBankLedger() {
+		return bankLedger;
+	}
+
+	public void setBankLedger(String bankLedger) {
+		this.bankLedger = bankLedger;
+	}
+
+	public String getBankAccountNumber() {
+		return bankAccountNumber;
+	}
+
+	public void setBankAccountNumber(String bankAccountNumber) {
+		this.bankAccountNumber = bankAccountNumber;
 	}
 
 	@Override
