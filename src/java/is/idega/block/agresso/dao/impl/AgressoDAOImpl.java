@@ -494,16 +494,22 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 
 	@Override
 	public AgressoFinanceEntry getParkingEntryByTicketNumber(String ticketNumber) {
+		if (StringUtil.isEmpty(ticketNumber)) {
+			return null;
+		}
+
 		try {
 			List<AgressoFinanceEntry> entries = null;
 			try {
 				entries = getResultList(AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER, AgressoFinanceEntry.class, new Param("ticketNumber", ticketNumber));
 			} catch (Exception e) {}
-			if (!ListUtil.isEmpty(entries)) {
-				AgressoFinanceEntry entry = entries.iterator().next();
-				getLogger().info("Found existing entry " + entry + " for ticket number " + ticketNumber);
-				return entry;
+
+			if (ListUtil.isEmpty(entries)) {
+				getLogger().warning("Failed to find existing entry for ticket number " + ticketNumber);
+				return null;
 			}
+
+			return entries.iterator().next();
 		} catch (Exception e) {
 			LOGGER.log(Level.WARNING, "Error getting parking entry for financial system by ticket number " + ticketNumber, e);
 		}
@@ -526,12 +532,13 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 				merge(entry);
 			}
 		} catch (Exception e) {
-			getLogger().log(Level.WARNING, "Could not create/update the agresso finance entry with ID " + entry.getAgressoID() + ". Error message was: " + e.getLocalizedMessage(), e);
+			getLogger().log(Level.WARNING, "Could not create/update finance entry " + entry, e);
 		}
-		return entry;
 
+		return entry.getID() == null ? null : entry;
 	}
 
+	@Override
 	@Transactional(readOnly = false)
 	public void setAsRead(Long entryId, boolean read, Date readDate) {
 		if (entryId == null) {
