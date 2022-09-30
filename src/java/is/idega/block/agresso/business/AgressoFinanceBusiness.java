@@ -161,17 +161,17 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 	 * @param isProtested, required otherwise isProtested and protestDate will be nulled in the db
 	 * @param rulingResult, if not supplied rulingResult and rulingDate will be nulled.
 	 */
-	public void updateTicketProtestInfo(String ticketNumber, boolean isProtested, String status, String reason, String explanation, Timestamp rullingDate) {
+	public AgressoFinanceEntry updateTicketProtestInfo(String ticketNumber, boolean isProtested, String status, String reason, String explanation, Timestamp rullingDate) {
 		List<AgressoFinanceEntry> entries = null;
 		try {
 			entries = getAgressoDAO().getResultList(AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER, AgressoFinanceEntry.class, new Param("ticketNumber", ticketNumber));
 		} catch (Exception e) {
 			getLogger().log(Level.WARNING, "Error while trying to find entry in DB table '" + AgressoFinanceEntry.ENTITY_NAME + "' by ticket number: " + ticketNumber, e);
-			return;
+			return null;
 		}
 		if (ListUtil.isEmpty(entries)) {
 			getLogger().warning("Unable to find entry in DB table '" + AgressoFinanceEntry.ENTITY_NAME + "' by ticket number: " + ticketNumber);
-			return;
+			return null;
 		}
 
 		if (entries.size() > 1) {
@@ -201,6 +201,8 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 			} else {
 				getAgressoDAO().persist(entry);
 			}
+
+			return entry.getID() == null ? null : entry;
 		} catch (Exception e) {
 			String message = "Error while updating agresso entry: ticket number: " + ticketNumber + ", status: " + status + ", reason: " + reason +	", explanation: " + explanation + ", rulling date: " + rullingDate;
 			getLogger().log(Level.WARNING, message, e);
