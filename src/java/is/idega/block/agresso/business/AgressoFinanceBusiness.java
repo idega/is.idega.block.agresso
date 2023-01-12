@@ -94,6 +94,46 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 			String paymentStatus,
 			Integer splitPayment
 	) {
+		return createEntryInAgressoForParkingCard(
+				null,
+				userSSN,
+				amount,
+				creationDate,
+				info,
+				registrationNumber,
+				permanentNumber,
+				carType,
+				owner,
+				parkingCardNumber,
+				invoiceNumber,
+				parkingZone,
+				validFrom,
+				validTo,
+				apartmentIdentifier,
+				paymentStatus,
+				splitPayment
+		);
+	}
+
+	public Long createEntryInAgressoForParkingCard(
+			String caseNumber,
+			String userSSN,
+			Integer amount,
+			Date creationDate,
+			String info,
+			String registrationNumber,
+			String permanentNumber,
+			String carType,
+			String owner,
+			String parkingCardNumber,
+			String invoiceNumber,
+			String parkingZone,
+			Date validFrom,
+			Date validTo,
+			String apartmentIdentifier,
+			String paymentStatus,
+			Integer splitPayment
+	) {
 		try {
 			IWTimestamp paymentDate = new IWTimestamp(creationDate);
 			int delay = getAgressoDAO().getDelayForParkingCardPayment();
@@ -102,6 +142,7 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 			}
 
 			return getAgressoDAO().addFinanceEntryParkingForParkingCard(
+					caseNumber,
 					"PARKING",
 					userSSN,
 					amount,

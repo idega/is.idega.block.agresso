@@ -37,6 +37,7 @@ public interface AgressoDAO extends GenericDao {
 	);
 
 	public Long addFinanceEntryParkingForParkingCard(
+			String caseNumber,
 			String entryType,
 			String userSSN,
 			Integer amount,

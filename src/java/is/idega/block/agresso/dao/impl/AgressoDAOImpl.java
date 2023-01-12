@@ -166,6 +166,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 	@Override
 	@Transactional
 	public Long addFinanceEntryParkingForParkingCard(
+			String caseNumber,
 			String entryType,
 			String userSSN,
 			Integer amount,
@@ -227,6 +228,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 					}
 
 					Long id = doCreateFinanceEntryParkingForParkingCard(
+							caseNumber,
 							entryType,
 							userSSN,
 							amount,
@@ -255,6 +257,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 			}
 
 			return doCreateFinanceEntryParkingForParkingCard(
+					caseNumber,
 					entryType,
 					userSSN,
 					amount,
@@ -285,6 +288,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 
 	@Transactional(readOnly = false)
 	private Long doCreateFinanceEntryParkingForParkingCard(
+			String caseNumber,
 			String entryType,
 			String userSSN,
 			Integer amount,
@@ -310,6 +314,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 
 		entry.setCreationDate(creationDate);
 
+		entry.setCaseNumber(caseNumber);
 		entry.setEntryUser(userSSN);
 		entry.setEntryType(entryType);
 		entry.setPaymentDate(paymentDate);

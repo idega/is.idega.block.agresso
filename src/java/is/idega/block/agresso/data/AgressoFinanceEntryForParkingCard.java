@@ -98,7 +98,9 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 								COLUMN_LAST_CHANGE_AT = "last_change_at",
 								COLUMN_PAYMENT_STATUS = "payment_status",
 								COLUMN_PAYMENT_NUMBER = "payment_number",
-								COLUMN_SPLIT_PAYMENT_DATE = "split_payment_date";
+								COLUMN_SPLIT_PAYMENT_DATE = "split_payment_date",
+
+								COLUMN_CASE_NUMBER = "case_number";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -179,6 +181,9 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 
 	@Column(name = COLUMN_PAYMENT_NUMBER)
 	private Integer paymentNumber;
+
+	@Column(name = COLUMN_CASE_NUMBER)
+	private String caseNumber;
 
 	public Long getId() {
 		return id;
@@ -378,6 +383,14 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 
 	public void setPaymentNumber(Integer paymentNumber) {
 		this.paymentNumber = paymentNumber;
+	}
+
+	public String getCaseNumber() {
+		return caseNumber;
+	}
+
+	public void setCaseNumber(String caseNumber) {
+		this.caseNumber = caseNumber;
 	}
 
 	@PrePersist
