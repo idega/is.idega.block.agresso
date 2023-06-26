@@ -514,6 +514,9 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 				return null;
 			}
 
+			if (entries.size()  > 1) {
+				getLogger().warning("Found multiple entries for ticket number " + ticketNumber + ": " + entries);
+			}
 			return entries.iterator().next();
 		} catch (Exception e) {
 			LOGGER.log(Level.WARNING, "Error getting parking entry for financial system by ticket number " + ticketNumber, e);
