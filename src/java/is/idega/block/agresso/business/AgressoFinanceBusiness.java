@@ -31,7 +31,7 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 	public Long createParkingEntry(String entryType, Date ticketDate, String user, Integer amount, String info,
 			String registrationNumber, String permanentNumber, String carType,
 			String owner, String ticketNumber, String ticketOfficer,
-			String streetName, String streetNumber, String streetDescription,
+			String streetName, String streetNumber, String streetDescription, String postalCode,
 			String meterNumber, String invoiceNumber) {
 
 		try {
@@ -40,7 +40,7 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 
 			AgressoFinanceEntry entry = getAgressoDAO().addFinanceEntryParking("PARKING", user, amount,
 					paymentDate.getTimestamp(),ticketDate, info, registrationNumber, permanentNumber, carType, owner, ticketNumber, ticketOfficer, streetName,
-					streetNumber, streetDescription, meterNumber, invoiceNumber);
+					streetNumber, streetDescription, postalCode, meterNumber, invoiceNumber);
 			return entry == null ? null : entry.getID();
 		} catch (Exception e) {
 			getLogger().log(Level.WARNING, "Error creating parking entry! Ticket number: " + ticketNumber, e);

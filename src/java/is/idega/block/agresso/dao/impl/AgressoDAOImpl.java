@@ -43,7 +43,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 
 	@Override
 	public Long addFinanceEntry(String entryType, String userSSN, Integer amount, Timestamp paymentDate, String info) {
-		AgressoFinanceEntry entry = addFinanceEntryParking(entryType, userSSN, amount, paymentDate, null, info, null, null, null, null, null, null, null, null, null, null, null);
+		AgressoFinanceEntry entry = addFinanceEntryParking(entryType, userSSN, amount, paymentDate, null, info, null, null, null, null, null, null, null, null, null, null, null, null);
 		return entry == null || entry.getID() == null ? null : entry.getID();
 	}
 
@@ -53,7 +53,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 			Integer amount, Timestamp paymentDate, Date creationDate, String info,
 			String registrationNumber, String permanentNumber, String carType,
 			String owner, String ticketNumber, String ticketOfficer,
-			String streetName, String streetNumber, String streetDescription,
+			String streetName, String streetNumber, String streetDescription, String postalCode,
 			String meterNumber, String invoiceNumber
 	) {
 		try {
@@ -90,6 +90,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 			entry.setStreetName(streetName);
 			entry.setStreetNumber(streetNumber);
 			entry.setStreetDescription(streetDescription);
+			entry.setPostalCode(postalCode);
 			entry.setMeterNumber(meterNumber);
 			entry.setInvoiceNumber(invoiceNumber);
 

@@ -80,6 +80,7 @@ public class AgressoFinanceEntry implements Serializable {
 	public static final String COLUMN_STREET_NAME = "street_name";
 	public static final String COLUMN_STREET_NUMBER = "street_number";
 	public static final String COLUMN_STREET_DESCRIPTION = "street_description";
+	public static final String COLUMN_POSTAL_CODE = "postal_code";
 	public static final String COLUMN_METER_NUMBER = "meter_number";
 	public static final String COLUMN_INVOICE_NUMBER = "invoice_number";
 
@@ -219,6 +220,9 @@ public class AgressoFinanceEntry implements Serializable {
 
 	@Column(name=AgressoFinanceEntry.COLUMN_BANK_ACCOUNT_OWNER)
 	private String bankAccountOwner;
+
+	@Column(name = AgressoFinanceEntry.COLUMN_POSTAL_CODE)
+	private String postalCode;
 
 	public Long getID() {
 		return this.id;
@@ -502,6 +506,14 @@ public class AgressoFinanceEntry implements Serializable {
 
 	public void setBankAccountOwner(String bankAccountOwner) {
 		this.bankAccountOwner = bankAccountOwner;
+	}
+
+	public String getPostalCode() {
+		return postalCode;
+	}
+
+	public void setPostalCode(String postalCode) {
+		this.postalCode = postalCode;
 	}
 
 	@Override

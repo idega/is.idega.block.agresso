@@ -32,6 +32,7 @@ public interface AgressoDAO extends GenericDao {
 			String streetName,
 			String streetNumber,
 			String streetDescription,
+			String postalCode,
 			String meterNumber,
 			String invoiceNumber
 	);
