@@ -87,4 +87,12 @@ public interface AgressoDAO extends GenericDao {
 
 	public void setAsRead(Long entryId, boolean read, Date readDate);
 
+	public List<AgressoFinanceEntryForParkingCard> getByCaseNumber(String caseNumber);
+
+	public AgressoFinanceEntryForParkingCard getFinanceEntryForParkingCard(Long id);
+
+	public AgressoFinanceEntryForParkingCard setFinanceEntryForParkingCard(Long id, Integer amount, Timestamp splitPaymentDate);
+
+	public boolean doDeleteFinanceEntryForParkingCard(Long id);
+
 }

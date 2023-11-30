@@ -23,7 +23,8 @@ import is.idega.block.agresso.AgressoConstants;
 @Entity
 @Table(name = AgressoFinanceEntryForParkingCard.TABLE_NAME, indexes = {
 		@Index(name = AgressoFinanceEntryForParkingCard.COLUMN_CAR_REGISTRATION_NUMBER + "_index", columnList = AgressoFinanceEntryForParkingCard.COLUMN_CAR_REGISTRATION_NUMBER),
-		@Index(name = AgressoFinanceEntryForParkingCard.COLUMN_PARKING_CARD_NUMBER + "_index", columnList = AgressoFinanceEntryForParkingCard.COLUMN_PARKING_CARD_NUMBER)
+		@Index(name = AgressoFinanceEntryForParkingCard.COLUMN_PARKING_CARD_NUMBER + "_index", columnList = AgressoFinanceEntryForParkingCard.COLUMN_PARKING_CARD_NUMBER),
+		@Index(name = AgressoFinanceEntryForParkingCard.COLUMN_CASE_NUMBER + "_index", columnList = AgressoFinanceEntryForParkingCard.COLUMN_CASE_NUMBER)
 })
 @NamedQueries({
 	@NamedQuery(
@@ -52,6 +53,11 @@ import is.idega.block.agresso.AgressoConstants;
 			query="select e from is.idega.block.agresso.data.AgressoFinanceEntryForParkingCard e where e.registrationNumber in (:" +
 					AgressoFinanceEntryForParkingCard.PARAM_REGISTRATION_NUMBER + ") and e.parkingCardNumber in (:" + AgressoFinanceEntryForParkingCard.PARAM_CARD_NUMBER +
 					") order by e.creationDate desc"
+	),
+	@NamedQuery(
+			name=AgressoFinanceEntryForParkingCard.FIND_BY_CASE_NUMBER,
+			query="select e from is.idega.block.agresso.data.AgressoFinanceEntryForParkingCard e where e.caseNumber = :" +
+					AgressoFinanceEntryForParkingCard.PARAM_CASE_NUMBER + " order by e.paymentNumber"
 	)
 })
 public class AgressoFinanceEntryForParkingCard implements Serializable {
@@ -65,13 +71,16 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 								NAMED_QUERY_FIND_BY_REGISTRATION_NUMBER_AND_VALID_TO = "parkingCardAgressoEntry.findByRegistrationNumberAndValidTo",
 								NAMED_QUERY_FIND_VALID_BY_REGISTRATION_NUMBER = "parkingCardAgressoEntry.findValidByRegistrationNumber",
 								NAMED_QUERY_FIND_BY_REGISTRATION_NUMBERS_AND_CARDS_NUMBERS = "parkingCardAgressoEntry.findByRegistrationNumbersAndCarsdNumbers",
+								FIND_BY_CASE_NUMBER = "parkingCardAgressoEntry.findByCaseNumber",
 
 								PARAM_REGISTRATION_NUMBER = "registrationNumber",
 								PARAM_VALID_TO = "validTo",
 								PARAM_CARD_NUMBER = "parkingCardNumber",
+								PARAM_CASE_NUMBER = "caseNumber",
 
 								COLUMN_CAR_REGISTRATION_NUMBER = "registration_number",
-								COLUMN_PARKING_CARD_NUMBER = "parking_card_number";
+								COLUMN_PARKING_CARD_NUMBER = "parking_card_number",
+								COLUMN_CASE_NUMBER = "case_number";
 
 	private static final String COLUMN_ID = "id",
 
@@ -98,9 +107,7 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 								COLUMN_LAST_CHANGE_AT = "last_change_at",
 								COLUMN_PAYMENT_STATUS = "payment_status",
 								COLUMN_PAYMENT_NUMBER = "payment_number",
-								COLUMN_SPLIT_PAYMENT_DATE = "split_payment_date",
-
-								COLUMN_CASE_NUMBER = "case_number";
+								COLUMN_SPLIT_PAYMENT_DATE = "split_payment_date";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -184,6 +191,12 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 
 	@Column(name = COLUMN_CASE_NUMBER)
 	private String caseNumber;
+
+	@Column(name = "synced_with_agresso")
+	private Boolean syncedWithAgresso;
+
+	@Column(name = "last_sync_with_agresso")
+	private Timestamp lastSyncWithAgresso;
 
 	public Long getId() {
 		return id;
@@ -391,6 +404,22 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 
 	public void setCaseNumber(String caseNumber) {
 		this.caseNumber = caseNumber;
+	}
+
+	public Boolean getSyncedWithAgresso() {
+		return syncedWithAgresso;
+	}
+
+	public void setSyncedWithAgresso(Boolean syncedWithAgresso) {
+		this.syncedWithAgresso = syncedWithAgresso;
+	}
+
+	public Timestamp getLastSyncWithAgresso() {
+		return lastSyncWithAgresso;
+	}
+
+	public void setLastSyncWithAgresso(Timestamp lastSyncWithAgresso) {
+		this.lastSyncWithAgresso = lastSyncWithAgresso;
 	}
 
 	@PrePersist

@@ -342,6 +342,19 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 	}
 
 	@Override
+	public List<AgressoFinanceEntryForParkingCard> getByCaseNumber(String caseNumber) {
+		if (StringUtil.isEmpty(caseNumber)) {
+			return null;
+		}
+
+		return getResultList(
+				AgressoFinanceEntryForParkingCard.FIND_BY_CASE_NUMBER,
+				AgressoFinanceEntryForParkingCard.class,
+				new Param(AgressoFinanceEntryForParkingCard.PARAM_CASE_NUMBER, caseNumber)
+		);
+	}
+
+	@Override
 	public List<AgressoFinanceEntryForParkingCard> getByRegistrationNumber(String registrationNumber, Timestamp validTo, boolean validOnly) {
 		if (StringUtil.isEmpty(registrationNumber)) {
 			return null;
@@ -567,6 +580,119 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 		} catch (Exception e) {
 			getLogger().log(Level.WARNING, "Error setting fin. entry " + entry + " as " + (read ? "read" : "not read"), e);
 		}
+	}
+
+	@Override
+	public AgressoFinanceEntryForParkingCard getFinanceEntryForParkingCard(Long id) {
+		if (id == null) {
+			return null;
+		}
+
+		try {
+			return getSingleResult(AgressoFinanceEntryForParkingCard.NAMED_QUERY_FIND_BY_ID, AgressoFinanceEntryForParkingCard.class, new Param("id", id));
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error getting finance entry for parking card by ID " + id, e);
+		}
+
+		return null;
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public AgressoFinanceEntryForParkingCard setFinanceEntryForParkingCard(Long id, Integer amount, Timestamp splitPaymentDate) {
+		if (id == null) {
+			return null;
+		}
+
+		AgressoFinanceEntryForParkingCard entry = null;
+		try {
+			entry = getFinanceEntryForParkingCard(id);
+			if (entry == null) {
+				return null;
+			}
+
+			entry.setAmount(amount);
+			entry.setSplitPaymentDate(splitPaymentDate);
+			merge(entry);
+
+			return entry;
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error updating fin. entry " + entry + " for parking card. New amount: " + amount + ", new payment date: " + splitPaymentDate, e);
+		}
+
+		return null;
+	}
+
+	@Override
+	@Transactional(readOnly = false)
+	public boolean doDeleteFinanceEntryForParkingCard(Long id) {
+		if (id == null) {
+			return false;
+		}
+
+		try {
+			AgressoFinanceEntryForParkingCard entryToDelete = getFinanceEntryForParkingCard(id);
+			if (entryToDelete == null) {
+				getLogger().warning("Did not find fin. entry for parking card with ID " + id);
+				return false;
+			}
+
+			String caseNumber = entryToDelete.getCaseNumber();
+			List<AgressoFinanceEntryForParkingCard> allEntriesForParkingCard = StringUtil.isEmpty(caseNumber) ? null : getByCaseNumber(caseNumber);
+			if (
+					ListUtil.isEmpty(allEntriesForParkingCard) ||
+					(allEntriesForParkingCard.size() == 1 && !StringUtil.isEmpty(caseNumber) && caseNumber.equals(allEntriesForParkingCard.iterator().next().getCaseNumber()))
+			) {
+				remove(entryToDelete);
+				getLogger().info("Deleted sole fin. entry for parking card with ID " + id + " and case number " + caseNumber);
+				return true;
+			}
+
+			Integer paymentNumberToDelete = entryToDelete.getPaymentNumber();
+			if (paymentNumberToDelete == null) {
+				getLogger().warning("Unknown payment number at fin. entry to delete. ID: " + id);
+				return false;
+			}
+
+			for (AgressoFinanceEntryForParkingCard entry: allEntriesForParkingCard) {
+				if (entry.getId().longValue() == id.longValue()) {
+					continue;
+				}
+
+				Integer paymentNumber = entry.getPaymentNumber();
+				if (paymentNumber == null) {
+					getLogger().warning("Do not know how to adjust payment number for fin. entry " + entry);
+					continue;
+				}
+
+				if (paymentNumber.intValue() < paymentNumberToDelete.intValue()) {
+					continue;	//	No changes needed
+				}
+
+				Integer newPaymentNumber = paymentNumber - 1;
+				newPaymentNumber = newPaymentNumber < 0 ? 1 : newPaymentNumber;
+				entry.setPaymentNumber(newPaymentNumber);
+
+				Timestamp paymentDate = entry.getSplitPaymentDate();
+				if (paymentDate != null) {
+					IWTimestamp timestamp = new IWTimestamp(paymentDate);
+					timestamp.setMonth(timestamp.getMonth() - 1);
+					paymentDate = timestamp.getTimestamp();
+					entry.setSplitPaymentDate(paymentDate);
+				}
+
+				merge(entry);
+				getLogger().info("Set new payment number (" + newPaymentNumber + ") and payment date (" + paymentDate + ") for split payment for parking card fin. entry " + entry);
+			}
+
+			remove(entryToDelete);
+			getLogger().info("Deleted fin. entry for parking card with ID " + id + " and case number " + caseNumber);
+			return true;
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error deleting fin. entry for parking card with ID " + id, e);
+		}
+
+		return false;
 	}
 
 }

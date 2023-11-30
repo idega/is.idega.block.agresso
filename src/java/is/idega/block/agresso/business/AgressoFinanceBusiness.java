@@ -179,16 +179,6 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 		return false;
 	}
 
-	public boolean deleteEntryFromAgressoForParkingCard(Long entryId) {
-		try {
-			return getAgressoDAO().deleteFinanceEntry(entryId, AgressoFinanceEntryForParkingCard.class);
-		} catch (Exception e) {
-			getLogger().log(Level.WARNING, "Error deleting entry from agresso table for parking card. ID: " + entryId, e);
-		}
-
-		return false;
-	}
-
 	protected AgressoDAO getAgressoDAO() {
 		if (agressoDAO == null) {
 			ELUtil.getInstance().autowire(this);
