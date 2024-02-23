@@ -30,6 +30,7 @@ import com.idega.util.ListUtil;
 import com.idega.util.StringUtil;
 import com.idega.util.datastructures.map.MapUtil;
 
+import is.idega.block.agresso.AgressoConstants;
 import is.idega.block.agresso.dao.AgressoDAO;
 import is.idega.block.agresso.data.AgressoFinanceEntry;
 import is.idega.block.agresso.data.AgressoFinanceEntryForParkingCard;
@@ -599,7 +600,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 
 	@Override
 	@Transactional(readOnly = false)
-	public AgressoFinanceEntryForParkingCard setFinanceEntryForParkingCard(Long id, Integer amount, Timestamp splitPaymentDate) {
+	public AgressoFinanceEntryForParkingCard setFinanceEntryForParkingCard(Long id, Integer amount, Timestamp splitPaymentDate, Integer totalAmount) {
 		if (id == null) {
 			return null;
 		}
@@ -611,9 +612,63 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 				return null;
 			}
 
-			entry.setAmount(amount);
-			entry.setSplitPaymentDate(splitPaymentDate);
-			merge(entry);
+			boolean save = false;
+
+			if (amount != null && amount.intValue() > 0) {
+				if (totalAmount != null) {
+					List<AgressoFinanceEntryForParkingCard> entries = getByCaseNumber(entry.getCaseNumber());
+					List<AgressoFinanceEntryForParkingCard> toUpdate = new ArrayList<>();
+					Integer alreadyPaid = 0;
+					for (AgressoFinanceEntryForParkingCard e: entries) {
+						String status = e.getPaymentStatus();
+						if (StringUtil.isEmpty(status)) {
+							continue;
+						}
+
+						switch (status) {
+						case AgressoConstants.PARKING_CARD_STATUS_PENDING:
+						case AgressoConstants.PARKING_CARD_STATUS_REACTIVATED:
+							if (id.longValue() != e.getId().longValue()) {
+								toUpdate.add(e);
+							}
+
+							break;
+
+						case AgressoConstants.PARKING_CARD_STATUS_SUCCESS:
+							Integer paidAmount = e.getAmount();
+							if (paidAmount != null && paidAmount > 0) {
+								alreadyPaid = alreadyPaid + paidAmount;
+							}
+							break;
+
+						default:
+							break;
+						}
+					}
+
+					int entriesToUpdate = toUpdate.size();
+					if (entriesToUpdate > 0) {
+						Integer amountToDivide = totalAmount - alreadyPaid - amount;
+						Integer amountForEachPayment = amountToDivide > 0 ? amountToDivide / entriesToUpdate : 0;
+						for (AgressoFinanceEntryForParkingCard e: toUpdate) {
+							e.setAmount(amountForEachPayment);
+							merge(e);
+						}
+					}
+				}
+
+				entry.setAmount(amount);
+				save = true;
+			}
+
+			if (splitPaymentDate != null) {
+				entry.setSplitPaymentDate(splitPaymentDate);
+				save = true;
+			}
+
+			if (save) {
+				merge(entry);
+			}
 
 			return entry;
 		} catch (Exception e) {

@@ -91,7 +91,7 @@ public interface AgressoDAO extends GenericDao {
 
 	public AgressoFinanceEntryForParkingCard getFinanceEntryForParkingCard(Long id);
 
-	public AgressoFinanceEntryForParkingCard setFinanceEntryForParkingCard(Long id, Integer amount, Timestamp splitPaymentDate);
+	public AgressoFinanceEntryForParkingCard setFinanceEntryForParkingCard(Long id, Integer amount, Timestamp splitPaymentDate, Integer totalAmount);
 
 	public boolean doDeleteFinanceEntryForParkingCard(Long id);
 
