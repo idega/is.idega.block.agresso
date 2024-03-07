@@ -99,7 +99,9 @@ public class AgressoFinanceEntry implements Serializable {
 								COLUMN_BANK_CODE = "bank_code",
 								COLUMN_BANK_LEDGER = "bank_ledger",
 								COLUMN_BANK_ACCOUNT_NUMBER = "bank_account_number",
-								COLUMN_BANK_ACCOUNT_OWNER = "bank_account_owner";
+								COLUMN_BANK_ACCOUNT_OWNER = "bank_account_owner",
+								COLUMN_CARD_NUMBER = "card_number",
+								COLUMN_AUTH_CODE = "auth_code";
 
 	public static final String RULING_APPROVED = AgressoConstants.TICKET_APPEAL_APPROVED;
 	public static final String RULING_DENIED = "denied";
@@ -223,6 +225,12 @@ public class AgressoFinanceEntry implements Serializable {
 
 	@Column(name = AgressoFinanceEntry.COLUMN_POSTAL_CODE)
 	private String postalCode;
+
+	@Column(name=COLUMN_CARD_NUMBER)
+	private String cardNumber;
+
+	@Column(name=COLUMN_AUTH_CODE)
+	private String authCode;
 
 	public Long getID() {
 		return this.id;
@@ -514,6 +522,22 @@ public class AgressoFinanceEntry implements Serializable {
 
 	public void setPostalCode(String postalCode) {
 		this.postalCode = postalCode;
+	}
+
+	public String getCardNumber() {
+		return cardNumber;
+	}
+
+	public void setCardNumber(String cardNumber) {
+		this.cardNumber = cardNumber;
+	}
+
+	public String getAuthCode() {
+		return authCode;
+	}
+
+	public void setAuthCode(String authCode) {
+		this.authCode = authCode;
 	}
 
 	@Override
