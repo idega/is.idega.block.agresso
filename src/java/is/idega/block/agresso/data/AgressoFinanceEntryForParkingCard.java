@@ -198,6 +198,12 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 	@Column(name = "last_sync_with_agresso")
 	private Timestamp lastSyncWithAgresso;
 
+	@Column(name = "actual_payment_date")
+	private Timestamp actualPaymentDate;
+
+	@Column(name = "drop_date")
+	private Timestamp dropDate;
+
 	public Long getId() {
 		return id;
 	}
@@ -422,6 +428,22 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 		this.lastSyncWithAgresso = lastSyncWithAgresso;
 	}
 
+	public Timestamp getActualPaymentDate() {
+		return actualPaymentDate;
+	}
+
+	public void setActualPaymentDate(Timestamp actualPaymentDate) {
+		this.actualPaymentDate = actualPaymentDate;
+	}
+
+	public Timestamp getDropDate() {
+		return dropDate;
+	}
+
+	public void setDropDate(Timestamp dropDate) {
+		this.dropDate = dropDate;
+	}
+
 	@PrePersist
 	@PreUpdate
 	public void prePersist() {
@@ -433,6 +455,7 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 	@Override
 	public String toString() {
 		return "Agresso entry for parking card. ID: " + getId() + ", car number: " + getRegistrationNumber() + ", parking card number: " +
-				getParkingCardNumber() + ", valid to: " + getValidTo() + ", payment status: " + getPaymentStatus() + ", amount: " + getAmount() + ", created: " + getCreationDate();
+				getParkingCardNumber() + ", valid to: " + getValidTo() + ", payment status: " + getPaymentStatus() + ", amount: " + getAmount() + ", created: " + getCreationDate() +
+				", case number: " + getCaseNumber() + ". Actual payment date: " + getActualPaymentDate() + ", drop date: " + getDropDate() + ", last sync with Agresso: " + getLastSyncWithAgresso();
 	}
 }
