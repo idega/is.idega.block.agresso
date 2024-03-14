@@ -563,6 +563,27 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 
 	@Override
 	@Transactional(readOnly = false)
+	public AgressoFinanceEntryForParkingCard updateFinanceEntryForParkingCard(AgressoFinanceEntryForParkingCard entry) {
+		if (entry == null) {
+			getLogger().warning("AgressoFinanceEntryForParkingCard is not provided");
+			return entry;
+		}
+
+		try {
+			if (entry.getId() == null) {
+				persist(entry);
+			} else {
+				merge(entry);
+			}
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Could not create/update finance entry for parking card " + entry, e);
+		}
+
+		return entry.getId() == null ? null : entry;
+	}
+
+	@Override
+	@Transactional(readOnly = false)
 	public void setAsRead(Long entryId, boolean read, Date readDate) {
 		if (entryId == null) {
 			return;

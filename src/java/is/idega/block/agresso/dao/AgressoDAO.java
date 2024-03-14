@@ -95,4 +95,6 @@ public interface AgressoDAO extends GenericDao {
 
 	public boolean doDeleteFinanceEntryForParkingCard(Long id);
 
+	public AgressoFinanceEntryForParkingCard updateFinanceEntryForParkingCard(AgressoFinanceEntryForParkingCard entry);
+
 }
