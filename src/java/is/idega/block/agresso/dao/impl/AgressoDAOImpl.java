@@ -683,6 +683,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 			}
 
 			if (splitPaymentDate != null) {
+				entry.setPaymentDate(splitPaymentDate);
 				entry.setSplitPaymentDate(splitPaymentDate);
 				save = true;
 			}
