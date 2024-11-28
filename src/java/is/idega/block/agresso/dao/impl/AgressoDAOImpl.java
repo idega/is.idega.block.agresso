@@ -162,7 +162,46 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 
 	@Override
 	public int getDelayForParkingCardPayment() {
-		return IWMainApplication.getDefaultIWMainApplication().getSettings().getInt("parking.card_payment_in", 3);
+		return IWMainApplication.getDefaultIWMainApplication().getSettings().getInt("parking.first_card_payment_in", 30);
+	}
+
+	@Override
+	public Date getLastKnownPaymentDateForParkingCard(String registrationNumber) {
+		if (StringUtil.isEmpty(registrationNumber)) {
+			return null;
+		}
+
+		try {
+			List<AgressoFinanceEntryForParkingCard> entries = getResultList(
+					AgressoFinanceEntryForParkingCard.NAMED_QUERY_FIND_BY_REGISTRATION_NUMBER,
+					AgressoFinanceEntryForParkingCard.class,
+					new Param(AgressoFinanceEntryForParkingCard.PARAM_REGISTRATION_NUMBER, registrationNumber)
+			);
+			if (ListUtil.isEmpty(entries)) {
+				return null;
+			}
+
+			for (AgressoFinanceEntryForParkingCard entry: entries) {
+				String paymentStatus = entry == null ? null : entry.getPaymentStatus();
+				if (paymentStatus != null && AgressoConstants.PARKING_CARD_STATUS_SUCCESS.equals(paymentStatus)) {
+					Date paymentDate = entry.getActualPaymentDate();
+					if (paymentDate == null) {
+						paymentDate = entry.getPaymentDate();
+					}
+					if (paymentDate == null) {
+						paymentDate = entry.getSplitPaymentDate();
+					}
+					if (paymentDate == null) {
+						paymentDate = entry.getCreationDate();
+					}
+					return paymentDate;
+				}
+			}
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error getting last known payment date for parking card of " + registrationNumber, e);
+		}
+
+		return null;
 	}
 
 	@Override
@@ -202,6 +241,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 					Timestamp splitPaymentDate = null;
 
 					if (i == 0) {
+						//	First payment
 						IWTimestamp iwPaymentDate = null;
 						if (paymentDate == null) {
 							iwPaymentDate = new IWTimestamp(payFrom);
@@ -214,13 +254,24 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 						lastMonth = iwPaymentDate;
 						paymentDate = iwPaymentDate.getTimestamp();
 						splitPaymentDate = paymentDate;
+
+					} else if ((i + 1) == splitPayment) {
+						//	Last payment
+						splitPaymentDate = new Timestamp(validTo.getTime());
+
 					} else {
+						//	Middle payments
 						IWTimestamp iwNextMonth = new IWTimestamp(payFrom);
-						int currentMonth = iwNextMonth.getMonth();
-						iwNextMonth.setMonth((currentMonth + i));
+						iwNextMonth.setMonth(iwNextMonth.getMonth() + i);
 						//	Checking if not jumped over a month, i.e. from January 30th to March 2 IF February has 28 days
 						while (iwNextMonth.getMonth() - lastMonth.getMonth() > 1) {
 							iwNextMonth.addDays(-1);
+						}
+						if (iwNextMonth.getDay() >= 15) {
+							iwNextMonth.setMonth(iwNextMonth.getMonth() + 1);	//	After 15th. of the month > 1st. date of not next month, but the month after.
+							iwNextMonth.setDay(1);
+						} else {
+							iwNextMonth.setDay(1);								//	Before 15th. of each month > Next payment date = 1st. of next month.
 						}
 
 						lastMonth = iwNextMonth;

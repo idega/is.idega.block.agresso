@@ -15,6 +15,7 @@ import com.idega.core.business.DefaultSpringBean;
 import com.idega.core.persistence.Param;
 import com.idega.util.IWTimestamp;
 import com.idega.util.ListUtil;
+import com.idega.util.StringUtil;
 import com.idega.util.expression.ELUtil;
 
 import is.idega.block.agresso.dao.AgressoDAO;
@@ -77,45 +78,6 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 	}
 
 	public Long createEntryInAgressoForParkingCard(
-			String userSSN,
-			Integer amount,
-			Date creationDate,
-			String info,
-			String registrationNumber,
-			String permanentNumber,
-			String carType,
-			String owner,
-			String parkingCardNumber,
-			String invoiceNumber,
-			String parkingZone,
-			Date validFrom,
-			Date validTo,
-			String apartmentIdentifier,
-			String paymentStatus,
-			Integer splitPayment
-	) {
-		return createEntryInAgressoForParkingCard(
-				null,
-				userSSN,
-				amount,
-				creationDate,
-				info,
-				registrationNumber,
-				permanentNumber,
-				carType,
-				owner,
-				parkingCardNumber,
-				invoiceNumber,
-				parkingZone,
-				validFrom,
-				validTo,
-				apartmentIdentifier,
-				paymentStatus,
-				splitPayment
-		);
-	}
-
-	public Long createEntryInAgressoForParkingCard(
 			String caseNumber,
 			String userSSN,
 			Integer amount,
@@ -135,7 +97,17 @@ public class AgressoFinanceBusiness extends DefaultSpringBean {
 			Integer splitPayment
 	) {
 		try {
-			IWTimestamp paymentDate = new IWTimestamp(creationDate);
+			Date lastKnownPaymentDate = getAgressoDAO().getLastKnownPaymentDateForParkingCard(registrationNumber);
+			if (lastKnownPaymentDate != null) {
+				String allowedGap = getSettings().getProperty("parking.gap_between_pc_payments", "2592000000");
+				if (!StringUtil.isEmpty(allowedGap) && System.currentTimeMillis() - lastKnownPaymentDate.getTime() > Long.valueOf(allowedGap)) {
+					getLogger().info("Can not use last known payment date " + lastKnownPaymentDate + " for " + registrationNumber + " - it's too old");
+					lastKnownPaymentDate = null;
+				}
+			}
+			IWTimestamp paymentDate = lastKnownPaymentDate == null ?
+					new IWTimestamp(creationDate) :
+					new IWTimestamp(lastKnownPaymentDate);
 			int delay = getAgressoDAO().getDelayForParkingCardPayment();
 			if (delay > 0) {
 				paymentDate.addDays(delay);

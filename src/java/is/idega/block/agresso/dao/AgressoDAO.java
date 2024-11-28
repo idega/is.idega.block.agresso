@@ -97,4 +97,6 @@ public interface AgressoDAO extends GenericDao {
 
 	public AgressoFinanceEntryForParkingCard updateFinanceEntryForParkingCard(AgressoFinanceEntryForParkingCard entry);
 
+	public Date getLastKnownPaymentDateForParkingCard(String registrationNumber);
+
 }
