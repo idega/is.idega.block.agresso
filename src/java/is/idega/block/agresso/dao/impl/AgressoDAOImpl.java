@@ -697,31 +697,31 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 							continue;
 						}
 
-						switch (status) {
-						case AgressoConstants.PARKING_CARD_STATUS_PENDING:
-						case AgressoConstants.PARKING_CARD_STATUS_REACTIVATED:
-							if (id.longValue() != e.getId().longValue()) {
-								toUpdate.add(e);
-							}
-
-							break;
-
-						case AgressoConstants.PARKING_CARD_STATUS_SUCCESS:
+						boolean paid = false;
+						if (
+								AgressoConstants.PARKING_CARD_STATUS_SUCCESS.equals(status) ||
+								(AgressoConstants.PARKING_CARD_STATUS_PENDING.equals(status) && e.getSyncedWithAgresso() != null && e.getSyncedWithAgresso())
+						) {
+							paid = true;
 							Integer paidAmount = e.getAmount();
 							if (paidAmount != null && paidAmount > 0) {
 								alreadyPaid = alreadyPaid + paidAmount;
 							}
-							break;
+						}
 
-						default:
-							break;
+						if (!paid && (AgressoConstants.PARKING_CARD_STATUS_PENDING.equals(status) || AgressoConstants.PARKING_CARD_STATUS_REACTIVATED.equals(status))) {
+							if (id.longValue() != e.getId().longValue()) {
+								toUpdate.add(e);
+							}
 						}
 					}
 
 					int entriesToUpdate = toUpdate.size();
 					if (entriesToUpdate > 0) {
 						Integer amountToDivide = totalAmount - alreadyPaid - amount;
-						Integer amountForEachPayment = amountToDivide > 0 ? amountToDivide / entriesToUpdate : 0;
+						Integer amountForEachPayment = amountToDivide > 0 ?
+								(amountToDivide / entriesToUpdate) :
+								0;
 						for (AgressoFinanceEntryForParkingCard e: toUpdate) {
 							e.setAmount(amountForEachPayment);
 							merge(e);
