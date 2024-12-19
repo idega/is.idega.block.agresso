@@ -186,10 +186,10 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 				if (paymentStatus != null && AgressoConstants.PARKING_CARD_STATUS_SUCCESS.equals(paymentStatus)) {
 					Date paymentDate = entry.getActualPaymentDate();
 					if (paymentDate == null) {
-						paymentDate = entry.getPaymentDate();
+						paymentDate = entry.getSplitPaymentDate();
 					}
 					if (paymentDate == null) {
-						paymentDate = entry.getSplitPaymentDate();
+						paymentDate = entry.getPaymentDate();
 					}
 					if (paymentDate == null) {
 						paymentDate = entry.getCreationDate();
