@@ -58,6 +58,13 @@ import is.idega.block.agresso.AgressoConstants;
 			name=AgressoFinanceEntryForParkingCard.FIND_BY_CASE_NUMBER,
 			query="select e from is.idega.block.agresso.data.AgressoFinanceEntryForParkingCard e where e.caseNumber = :" +
 					AgressoFinanceEntryForParkingCard.PARAM_CASE_NUMBER + " order by e.paymentNumber"
+	),
+	@NamedQuery(
+			name = AgressoFinanceEntryForParkingCard.GET_NOT_SENT_PAYMENTS,
+			query = "select e.id from is.idega.block.agresso.data.AgressoFinanceEntryForParkingCard e where e.paymentStatus in :" +
+					AgressoFinanceEntryForParkingCard.PARAM_PAYMENT_STATUS + " and (e.paymentDate >= :" + AgressoFinanceEntryForParkingCard.PARAM_DATE +
+					" or e.splitPaymentDate >= :" + AgressoFinanceEntryForParkingCard.PARAM_DATE + ") and e.syncedWithAgresso = :" + AgressoFinanceEntryForParkingCard.PARAM_SYNC_STATUS +
+					" order by e.paymentNumber"
 	)
 })
 public class AgressoFinanceEntryForParkingCard implements Serializable {
@@ -72,11 +79,15 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 								NAMED_QUERY_FIND_VALID_BY_REGISTRATION_NUMBER = "parkingCardAgressoEntry.findValidByRegistrationNumber",
 								NAMED_QUERY_FIND_BY_REGISTRATION_NUMBERS_AND_CARDS_NUMBERS = "parkingCardAgressoEntry.findByRegistrationNumbersAndCarsdNumbers",
 								FIND_BY_CASE_NUMBER = "parkingCardAgressoEntry.findByCaseNumber",
+								GET_NOT_SENT_PAYMENTS = "parkingCardAgressoEntry.getNotSentPayments",
 
 								PARAM_REGISTRATION_NUMBER = "registrationNumber",
 								PARAM_VALID_TO = "validTo",
 								PARAM_CARD_NUMBER = "parkingCardNumber",
 								PARAM_CASE_NUMBER = "caseNumber",
+								PARAM_PAYMENT_STATUS = "paymentStatus",
+								PARAM_DATE = "date",
+								PARAM_SYNC_STATUS = "syncStatus",
 
 								COLUMN_CAR_REGISTRATION_NUMBER = "registration_number",
 								COLUMN_PARKING_CARD_NUMBER = "parking_card_number",

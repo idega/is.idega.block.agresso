@@ -99,4 +99,6 @@ public interface AgressoDAO extends GenericDao {
 
 	public Date getLastKnownPaymentDateForParkingCard(String registrationNumber);
 
+	public List<Long> getIdsOfFinanceEntriesForParkingCards(List<String> statuses, Timestamp time, Boolean syncStatus);
+
 }

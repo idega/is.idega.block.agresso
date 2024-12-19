@@ -823,4 +823,28 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 		return false;
 	}
 
+	@Override
+	public List<Long> getIdsOfFinanceEntriesForParkingCards(List<String> statuses, Timestamp time, Boolean syncStatus) {
+		if (ListUtil.isEmpty(statuses) || time == null || syncStatus == null) {
+			return null;
+		}
+
+		try {
+			return getResultList(
+					AgressoFinanceEntryForParkingCard.GET_NOT_SENT_PAYMENTS,
+					Long.class,
+					new Param(AgressoFinanceEntryForParkingCard.PARAM_PAYMENT_STATUS, statuses),
+					new Param(AgressoFinanceEntryForParkingCard.PARAM_DATE, time),
+					new Param(AgressoFinanceEntryForParkingCard.PARAM_SYNC_STATUS, syncStatus)
+			);
+		} catch (Exception e) {
+			getLogger().log(
+					Level.WARNING,
+					"Error getting IDs of not sent parking permits' entries to Agresso. Statuses: " + statuses + ", time: " + time + ", synced with Agresso: " + syncStatus,
+					e
+			);
+		}
+		return null;
+	}
+
 }
