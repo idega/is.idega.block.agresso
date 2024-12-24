@@ -237,15 +237,25 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 				Long firstEntryId = null;
 				int delay = getDelayForParkingCardPayment();
 				IWTimestamp lastMonth = null;
+				IWTimestamp iwNow = IWTimestamp.RightNow();
+				long now = iwNow.getTime().getTime();
 				for (int i = 0; i < splitPayment; i++) {
 					Timestamp splitPaymentDate = null;
 
 					if (i == 0) {
 						//	First payment
 						IWTimestamp iwPaymentDate = null;
-						if (paymentDate == null) {
+						if (paymentDate == null || paymentDate.getTime() < now) {
 							iwPaymentDate = new IWTimestamp(payFrom);
-							if (paymentDate == null && delay > 0) {
+							if (iwPaymentDate.getTime().getTime() < now) {
+								iwPaymentDate.setYear(iwNow.getYear());
+								iwPaymentDate.setMonth(iwNow.getMonth());
+								iwPaymentDate.setDay(iwNow.getDay());
+								iwPaymentDate.setHour(iwNow.getHour());
+								iwPaymentDate.setMinute(iwNow.getMinute());
+								iwPaymentDate.setSecond(iwNow.getSecond());
+							}
+							if ((paymentDate == null || paymentDate.getTime() < now) && delay > 0) {
 								iwPaymentDate.addDays(delay);
 							}
 						} else {
