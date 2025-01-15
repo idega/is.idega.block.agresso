@@ -239,6 +239,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 				IWTimestamp lastMonth = null;
 				IWTimestamp iwNow = IWTimestamp.RightNow();
 				long now = iwNow.getTime().getTime();
+				boolean lastPaymentDateValidToDate = IWMainApplication.getDefaultIWMainApplication().getSettings().getBoolean("parking.permit_last_pay_date_same_as_valid_to", false);
 				for (int i = 0; i < splitPayment; i++) {
 					Timestamp splitPaymentDate = null;
 
@@ -265,7 +266,7 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 						paymentDate = iwPaymentDate.getTimestamp();
 						splitPaymentDate = paymentDate;
 
-					} else if ((i + 1) == splitPayment) {
+					} else if (((i + 1) == splitPayment) && lastPaymentDateValidToDate) {
 						//	Last payment
 						splitPaymentDate = new Timestamp(validTo.getTime());
 
