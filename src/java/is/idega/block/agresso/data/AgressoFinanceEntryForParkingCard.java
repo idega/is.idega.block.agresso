@@ -62,9 +62,9 @@ import is.idega.block.agresso.AgressoConstants;
 	@NamedQuery(
 			name = AgressoFinanceEntryForParkingCard.GET_NOT_SENT_PAYMENTS,
 			query = "select e.id from is.idega.block.agresso.data.AgressoFinanceEntryForParkingCard e where e.paymentStatus in :" +
-					AgressoFinanceEntryForParkingCard.PARAM_PAYMENT_STATUS + " and (e.paymentDate >= :" + AgressoFinanceEntryForParkingCard.PARAM_DATE +
-					" or e.splitPaymentDate >= :" + AgressoFinanceEntryForParkingCard.PARAM_DATE + ") and e.syncedWithAgresso = :" + AgressoFinanceEntryForParkingCard.PARAM_SYNC_STATUS +
-					" order by e.paymentNumber"
+					AgressoFinanceEntryForParkingCard.PARAM_PAYMENT_STATUS + " and (e.splitPaymentDate >= :" + AgressoFinanceEntryForParkingCard.PARAM_DATE +
+					" or e.paymentDate >= :" + AgressoFinanceEntryForParkingCard.PARAM_DATE + ") and (e.syncedWithAgresso is null or e.syncedWithAgresso = :" +
+					AgressoFinanceEntryForParkingCard.PARAM_SYNC_STATUS + ") order by e.paymentNumber"
 	)
 })
 public class AgressoFinanceEntryForParkingCard implements Serializable {
