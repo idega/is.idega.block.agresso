@@ -467,6 +467,7 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 	public String toString() {
 		return "Agresso entry for parking card. ID: " + getId() + ", car number: " + getRegistrationNumber() + ", parking card number: " +
 				getParkingCardNumber() + ", valid to: " + getValidTo() + ", payment status: " + getPaymentStatus() + ", amount: " + getAmount() + ", created: " + getCreationDate() +
-				", case number: " + getCaseNumber() + ". Actual payment date: " + getActualPaymentDate() + ", drop date: " + getDropDate() + ", last sync with Agresso: " + getLastSyncWithAgresso();
+				", case number: " + getCaseNumber() + ". Split payment date: " + getSplitPaymentDate() + ", payment date: " + getPaymentDate() +
+				". Actual payment date: " + getActualPaymentDate() + ", drop date: " + getDropDate() + ", last sync with Agresso: " + getLastSyncWithAgresso();
 	}
 }
