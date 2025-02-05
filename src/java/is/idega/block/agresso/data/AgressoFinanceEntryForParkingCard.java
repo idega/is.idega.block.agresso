@@ -118,7 +118,9 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 								COLUMN_LAST_CHANGE_AT = "last_change_at",
 								COLUMN_PAYMENT_STATUS = "payment_status",
 								COLUMN_PAYMENT_NUMBER = "payment_number",
-								COLUMN_SPLIT_PAYMENT_DATE = "split_payment_date";
+								COLUMN_SPLIT_PAYMENT_DATE = "split_payment_date",
+
+								COLUMN_PAYMENT_INITIATED_BY = "payment_initiated_by";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -214,6 +216,9 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 
 	@Column(name = "drop_date")
 	private Timestamp dropDate;
+
+	@Column(name = COLUMN_PAYMENT_INITIATED_BY)
+	private Integer paymentInitiatedBy;
 
 	public Long getId() {
 		return id;
@@ -455,6 +460,14 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 		this.dropDate = dropDate;
 	}
 
+	public Integer getPaymentInitiatedBy() {
+		return paymentInitiatedBy;
+	}
+
+	public void setPaymentInitiatedBy(Integer paymentInitiatedBy) {
+		this.paymentInitiatedBy = paymentInitiatedBy;
+	}
+
 	@PrePersist
 	@PreUpdate
 	public void prePersist() {
@@ -468,6 +481,7 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 		return "Agresso entry for parking card. ID: " + getId() + ", car number: " + getRegistrationNumber() + ", parking card number: " +
 				getParkingCardNumber() + ", valid to: " + getValidTo() + ", payment status: " + getPaymentStatus() + ", amount: " + getAmount() + ", created: " + getCreationDate() +
 				", case number: " + getCaseNumber() + ". Split payment date: " + getSplitPaymentDate() + ", payment date: " + getPaymentDate() +
-				". Actual payment date: " + getActualPaymentDate() + ", drop date: " + getDropDate() + ", last sync with Agresso: " + getLastSyncWithAgresso();
+				". Actual payment date: " + getActualPaymentDate() + ", drop date: " + getDropDate() + ", last sync with Agresso: " + getLastSyncWithAgresso() + ". Payment initiated by: " +
+				getPaymentInitiatedBy();
 	}
 }
