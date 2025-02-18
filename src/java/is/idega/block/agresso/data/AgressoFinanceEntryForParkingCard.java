@@ -119,6 +119,7 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 								COLUMN_PAYMENT_STATUS = "payment_status",
 								COLUMN_PAYMENT_NUMBER = "payment_number",
 								COLUMN_SPLIT_PAYMENT_DATE = "split_payment_date",
+								COLUMN_RECEIVED_SUCCESS = "received_success_at",
 
 								COLUMN_PAYMENT_INITIATED_BY = "payment_initiated_by";
 
@@ -219,6 +220,9 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 
 	@Column(name = COLUMN_PAYMENT_INITIATED_BY)
 	private Integer paymentInitiatedBy;
+
+	@Column(name = COLUMN_RECEIVED_SUCCESS)
+	private Timestamp receivedSuccess;
 
 	public Long getId() {
 		return id;
@@ -468,6 +472,14 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 		this.paymentInitiatedBy = paymentInitiatedBy;
 	}
 
+	public Timestamp getReceivedSuccess() {
+		return receivedSuccess;
+	}
+
+	public void setReceivedSuccess(Timestamp receivedSuccess) {
+		this.receivedSuccess = receivedSuccess;
+	}
+
 	@PrePersist
 	@PreUpdate
 	public void prePersist() {
@@ -481,7 +493,7 @@ public class AgressoFinanceEntryForParkingCard implements Serializable {
 		return "Agresso entry for parking card. ID: " + getId() + ", car number: " + getRegistrationNumber() + ", parking card number: " +
 				getParkingCardNumber() + ", valid to: " + getValidTo() + ", payment status: " + getPaymentStatus() + ", amount: " + getAmount() + ", created: " + getCreationDate() +
 				", case number: " + getCaseNumber() + ". Split payment date: " + getSplitPaymentDate() + ", payment date: " + getPaymentDate() +
-				". Actual payment date: " + getActualPaymentDate() + ", drop date: " + getDropDate() + ", last sync with Agresso: " + getLastSyncWithAgresso() + ". Payment initiated by: " +
-				getPaymentInitiatedBy();
+				". Actual payment date: " + getActualPaymentDate() + ", drop date: " + getDropDate() + ", last sync with Agresso: " + getLastSyncWithAgresso() +
+				", received success from Agresso at " + getReceivedSuccess() + ". Payment initiated by: " + getPaymentInitiatedBy();
 	}
 }
