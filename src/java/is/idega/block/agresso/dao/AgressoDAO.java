@@ -101,4 +101,6 @@ public interface AgressoDAO extends GenericDao {
 
 	public List<Long> getIdsOfFinanceEntriesForParkingCards(List<String> statuses, Timestamp time, Boolean syncStatus);
 
+	public List<Long> getIdsOfFinanceEntriesForParkingCardsByPaymentStatuses(List<String> statuses);
+
 }

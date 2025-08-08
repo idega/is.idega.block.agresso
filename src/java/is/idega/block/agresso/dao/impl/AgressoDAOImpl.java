@@ -858,4 +858,22 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 		return null;
 	}
 
+	@Override
+	public List<Long> getIdsOfFinanceEntriesForParkingCardsByPaymentStatuses(List<String> statuses) {
+		if (ListUtil.isEmpty(statuses)) {
+			return null;
+		}
+
+		try {
+			return getResultList(
+					AgressoFinanceEntryForParkingCard.FIND_BY_PAYMENT_STATUSES,
+					Long.class,
+					new Param(AgressoFinanceEntryForParkingCard.PARAM_PAYMENT_STATUS, statuses)
+			);
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error getting IDs of finance entries for parking cards by payment status(es) " + statuses, e);
+		}
+		return null;
+	}
+
 }
