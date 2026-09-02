@@ -31,6 +31,10 @@ import is.idega.block.agresso.AgressoConstants;
 			query="select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.ticketNumber = :ticketNumber"
 	),
 	@NamedQuery(
+			name=AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKETS_NUMBERS,
+			query="select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.ticketNumber in (:ticketNumber)"
+	),
+	@NamedQuery(
 			name=AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON,
 			query="select e from is.idega.block.agresso.data.AgressoFinanceEntry e where e.ticketNumber = :ticketNumber and (e.rulingResult is null or e.rulingResult = 'protested')"
 	),
@@ -109,6 +113,7 @@ public class AgressoFinanceEntry implements Serializable {
 	public static final String	NAMED_QUERY_FIND_BY_ID = "agressoFinanceEntry.findById",
 								NAMED_QUERY_FIND_BY_TICKET_NUMBER_NOT_RULED_ON = "agressoFinanceEntry.findByTicketNumberNotRuled",
 								NAMED_QUERY_FIND_BY_TICKET_NUMBER = "agressoFinanceEntry.findByTicketNumber",
+								NAMED_QUERY_FIND_BY_TICKETS_NUMBERS = "agressoFinanceEntry.findByTicketsNumbers",
 								NAMED_QUERY_FIND_UNREAD = "agressoFinanceEntry.findUnread",
 								NAMED_QUERY_FIND_APPROVED_APPEALS = "agressoFinanceEntry.findApprovedAppeals",
 								NAMED_QUERY_FIND_DENIED_APPEALS = "agressoFinanceEntry.findDeniedAppeals",

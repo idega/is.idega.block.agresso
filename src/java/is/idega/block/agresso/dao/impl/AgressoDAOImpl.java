@@ -603,6 +603,21 @@ public class AgressoDAOImpl extends GenericDaoImpl implements AgressoDAO {
 	}
 
 	@Override
+	public List<AgressoFinanceEntry> getParkingEntriesByTicketsNumbers(List<String> ticketsNumbers) {
+		if (ListUtil.isEmpty(ticketsNumbers)) {
+			return null;
+		}
+
+		try {
+			return getResultList(AgressoFinanceEntry.NAMED_QUERY_FIND_BY_TICKETS_NUMBERS, AgressoFinanceEntry.class, new Param("ticketNumber", ticketsNumbers));
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error getting parking entries for financial system by tickets numbers " + ticketsNumbers, e);
+		}
+
+		return null;
+	}
+
+	@Override
 	@Transactional(readOnly = false)
 	public AgressoFinanceEntry updateAgressoFinanceEntry(AgressoFinanceEntry entry) {
 		if (entry == null) {
